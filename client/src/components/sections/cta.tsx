@@ -19,10 +19,10 @@ export default function CTA() {
           <Card className="bg-primary text-white">
             <CardContent className="p-12 text-center">
               <h2 className="text-4xl font-bold mb-4">
-                Ready to Start Your Investment Journey?
+                Pronto para Começar sua Jornada de Investimento?
               </h2>
               <p className="text-lg mb-8 text-white/90">
-                Join our platform today and take control of your financial future
+                Junte-se à nossa plataforma hoje e assuma o controle do seu futuro financeiro
               </p>
               <Button
                 size="lg"
@@ -30,7 +30,7 @@ export default function CTA() {
                 onClick={() => handleScroll("contact")}
                 className="bg-white text-primary hover:bg-white/90"
               >
-                Get Started Now
+                Comece Agora
               </Button>
             </CardContent>
           </Card>

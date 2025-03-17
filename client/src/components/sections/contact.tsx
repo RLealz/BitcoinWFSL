@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -21,8 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -44,15 +45,15 @@ export default function Contact() {
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Thank you for your interest. We'll contact you soon!",
+        title: "Sucesso",
+        description: "Obrigado pelo seu interesse. Entraremos em contato em breve!",
       });
       form.reset();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: "Erro",
+        description: "Algo deu errado. Por favor, tente novamente.",
         variant: "destructive",
       });
     },
@@ -70,116 +71,142 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="max-w-2xl mx-auto"
+          className="max-w-4xl mx-auto"
         >
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Contact Us</h2>
-            <p className="text-lg text-muted-foreground">
-              Get in touch with our investment experts
-            </p>
+            <h2 className="text-4xl font-bold mb-4">Contacte-nos</h2>
           </div>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-primary" />
+                  <p>geral.bitcoinwfsl@proton.me</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-primary" />
+                  <p>+351 913 207 651</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <p>Rua da Inovação, 123, 1000-001 Lisboa, Portugal</p>
+                </div>
+              </div>
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="mt-12">
+                <h3 className="text-lg font-semibold mb-4">Com o apoio de:</h3>
+                <div className="space-y-2">
+                  <p>FMLG</p>
+                  <p>DeafPro DAO 2025</p>
+                </div>
+              </div>
+            </div>
 
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your phone number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="investmentRange"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Investment Range</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select investment range" />
-                        </SelectTrigger>
+                        <Input placeholder="Seu nome" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="0-10000">$0 - $10,000</SelectItem>
-                        <SelectItem value="10000-50000">
-                          $10,000 - $50,000
-                        </SelectItem>
-                        <SelectItem value="50000-100000">
-                          $50,000 - $100,000
-                        </SelectItem>
-                        <SelectItem value="100000+">$100,000+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Message</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Tell us about your investment goals"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Seu email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? "Sending..." : "Send Message"}
-              </Button>
-            </form>
-          </Form>
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field: { value, ...fieldProps } }) => (
+                    <FormItem>
+                      <FormLabel>Telefone (Opcional)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Seu número de telefone" 
+                          value={value ?? ''} 
+                          {...fieldProps} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="investmentRange"
+                  render={({ field: { value, ...fieldProps } }) => (
+                    <FormItem>
+                      <FormLabel>Faixa de Investimento</FormLabel>
+                      <Select
+                        onValueChange={fieldProps.onChange}
+                        value={value ?? undefined}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o valor de investimento" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="0-100">Até 100€</SelectItem>
+                          <SelectItem value="100-500">100€ - 500€</SelectItem>
+                          <SelectItem value="500-1000">500€ - 1000€</SelectItem>
+                          <SelectItem value="1000-5000">1000€ - 5000€</SelectItem>
+                          <SelectItem value="5000+">Mais de 5000€</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field: { value, ...fieldProps } }) => (
+                    <FormItem>
+                      <FormLabel>Mensagem</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Conte-nos sobre seus objetivos de investimento"
+                          value={value ?? ''}
+                          {...fieldProps}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? "Enviando..." : "Enviar Mensagem"}
+                </Button>
+              </form>
+            </Form>
+          </div>
         </motion.div>
       </div>
     </section>

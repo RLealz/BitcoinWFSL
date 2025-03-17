@@ -16,12 +16,10 @@ export default function Hero() {
           className="max-w-3xl"
         >
           <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
-            Build Your Wealth with{" "}
-            <span className="text-primary">Bitcoin Investment</span>
+            <span className="text-primary">BITCOIN WFSL</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            Join thousands of investors who trust us with their cryptocurrency
-            investments. Professional guidance, secure platform, proven results.
+            Faça Crescer a Sua Riqueza com Investimentos em Criptomoedas
           </p>
           <div className="flex gap-4">
             <Button
@@ -29,14 +27,14 @@ export default function Hero() {
               onClick={() => handleScroll("contact")}
               className="bg-primary hover:bg-primary/90"
             >
-              Start Investing
+              Comece a Investir
             </Button>
             <Button
               size="lg"
               variant="outline"
               onClick={() => handleScroll("features")}
             >
-              Learn More
+              Saiba Mais
             </Button>
           </div>
         </motion.div>
