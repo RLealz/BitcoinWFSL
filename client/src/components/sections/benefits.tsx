@@ -1,12 +1,10 @@
 import { motion } from "framer-motion";
 
 const investmentPlans = [
-  { initial: "100 €", final: "130 €", return: "30%" },
-  { initial: "500 €", final: "650 €", return: "30%" },
-  { initial: "1000 €", final: "1300 €", return: "30%" },
-  { initial: "2500 €", final: "3250 €", return: "30%" },
-  { initial: "5000 €", final: "6500 €", return: "30%" },
-  { initial: "10000 €", final: "13000 €", return: "30%" },
+  { tier: "Bronze", initial: "1.000 €", minReturn: "100 €", maxReturn: "180 €" },
+  { tier: "Prata", initial: "2.500 €", minReturn: "250 €", maxReturn: "350 €" },
+  { tier: "Ouro", initial: "5.000 €", minReturn: "500 €", maxReturn: "750 €" },
+  { tier: "Diamante", initial: "10.000+ €", minReturn: "1.000 €", maxReturn: "1.500 €" },
 ];
 
 export default function Benefits() {
@@ -27,17 +25,19 @@ export default function Benefits() {
             <table className="w-full">
               <thead>
                 <tr className="bg-primary/10">
+                  <th className="px-6 py-4 text-left">Nível</th>
                   <th className="px-6 py-4 text-left">Capital Inicial</th>
-                  <th className="px-6 py-4 text-left">Capital em 1 Mês</th>
-                  <th className="px-6 py-4 text-left">Retorno em 1 Mês</th>
+                  <th className="px-6 py-4 text-left">Retorno Mensal Mínimo</th>
+                  <th className="px-6 py-4 text-left">Retorno Mensal Máximo</th>
                 </tr>
               </thead>
               <tbody>
                 {investmentPlans.map((plan, index) => (
                   <tr key={index} className="border-b">
+                    <td className="px-6 py-4">{plan.tier}</td>
                     <td className="px-6 py-4">{plan.initial}</td>
-                    <td className="px-6 py-4">{plan.final}</td>
-                    <td className="px-6 py-4">{plan.return}</td>
+                    <td className="px-6 py-4">{plan.minReturn}</td>
+                    <td className="px-6 py-4">{plan.maxReturn}</td>
                   </tr>
                 ))}
               </tbody>
