@@ -23,8 +23,8 @@
     @apply border-border;
   }
 
-  body {
-    @apply font-sans antialiased text-foreground;
-    background: linear-gradient(45deg, #1a1a2e 0%, #4a1578 100%); /* Added purple gradient background */
+  body, #root {
+    @apply font-sans antialiased text-foreground min-h-screen;
+    background: linear-gradient(45deg, #1a1a2e 0%, #4a1578 100%);
   }
 }
