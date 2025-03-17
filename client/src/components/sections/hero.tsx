@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -8,7 +9,7 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center">
-      <div className="container mx-auto px-6 py-24">
+      <div className="container mx-auto px-6 py-24 flex justify-between items-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -37,6 +38,15 @@ export default function Hero() {
               Saiba Mais
             </Button>
           </div>
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="hidden md:block"
+        >
+          <div className="bitcoin-symbol">₿</div>
         </motion.div>
       </div>
     </section>
