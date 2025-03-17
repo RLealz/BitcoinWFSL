@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Bitcoin } from "lucide-react";
 
 export default function Hero() {
   const handleScroll = (id: string) => {
@@ -46,7 +47,7 @@ export default function Hero() {
           transition={{ duration: 1 }}
           className="hidden md:block"
         >
-          <div className="bitcoin-symbol">₿</div>
+          <Bitcoin className="w-40 h-40 text-[#F7931A]" />
         </motion.div>
       </div>
     </section>
