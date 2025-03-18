@@ -25,15 +25,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Support Section */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-[#FFD700]">Com o apoio de</h3>
-            <div className="space-y-2">
-              <p className="text-white">FMLG</p>
-              <p className="text-white">DeafPro DAO 2025</p>
-            </div>
-          </div>
-
           {/* Quick Contact */}
           <div>
             <h3 className="text-xl font-semibold mb-4 text-[#FFD700]">Entre em contato já</h3>
@@ -58,6 +49,15 @@ export default function Footer() {
             <p className="text-white/60 text-sm mt-4">
               © {new Date().getFullYear()} Bitcoin WFSL. Todos os direitos reservados.
             </p>
+          </div>
+
+          {/* Support Section */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-[#FFD700]">Com o apoio de</h3>
+            <div className="space-y-2">
+              <p className="text-white">FMLG</p>
+              <p className="text-white">DeafPro DAO 2025</p>
+            </div>
           </div>
         </div>
       </div>
