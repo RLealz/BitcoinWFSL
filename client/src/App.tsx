@@ -8,6 +8,7 @@ import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth";
 import AdminDashboard from "@/pages/admin/dashboard";
+import Footer from "@/components/sections/footer";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <main className="flex-grow">
             <Router />
           </main>
+          <Footer />
         </div>
         <Toaster />
       </AuthProvider>
