@@ -22,7 +22,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "'wasm-unsafe-eval'", "https://www.google.com/recaptcha/", "https://www.gstatic.com/"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "wss://stream.binance.com:9443", "https://www.google.com/recaptcha/"],
+      connectSrc: ["'self'", "wss://stream.binance.com:9443", "https://www.google.com/recaptcha/", "ws://stream.binance.com:9443"],
       frameSrc: ["'self'", "https://www.google.com/recaptcha/"],
       workerSrc: ["'self'", "blob:"],
       childSrc: ["'self'", "blob:"],

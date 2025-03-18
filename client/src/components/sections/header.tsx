@@ -14,40 +14,60 @@ export default function Header() {
   };
 
   useEffect(() => {
-    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
+    // Create WebSocket connection
+    let ws: WebSocket | null = null;
 
-    ws.onopen = () => {
-      console.log('WebSocket connected to Binance');
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    ws.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
-
-    ws.onmessage = (event) => {
+    const connectWebSocket = () => {
       try {
-        const data = JSON.parse(event.data);
-        console.log('Received price data:', data);
+        ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
 
-        if (data && data.c) {
-          const newPrice = parseFloat(data.c);
-          setPrice(newPrice);
+        ws.onopen = () => {
+          console.log('Connected to Binance WebSocket');
+        };
 
-          if (data.P) {
-            setPriceChange(parseFloat(data.P));
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            console.log('Received data:', data);
+
+            if (data && data.c) {
+              const currentPrice = parseFloat(data.c);
+              const priceChangePercent = parseFloat(data.P);
+
+              if (!isNaN(currentPrice)) {
+                setPrice(currentPrice);
+              }
+              if (!isNaN(priceChangePercent)) {
+                setPriceChange(priceChangePercent);
+              }
+            }
+          } catch (error) {
+            console.error('Error processing message:', error);
           }
-        }
+        };
+
+        ws.onerror = (error) => {
+          console.error('WebSocket error:', error);
+        };
+
+        ws.onclose = () => {
+          console.log('WebSocket connection closed');
+          // Try to reconnect
+          setTimeout(connectWebSocket, 5000);
+        };
       } catch (error) {
-        console.error('Error processing price data:', error);
+        console.error('Failed to connect:', error);
+        // Try to reconnect
+        setTimeout(connectWebSocket, 5000);
       }
     };
 
+    // Initial connection
+    connectWebSocket();
+
+    // Cleanup on unmount
     return () => {
-      if (ws.readyState === WebSocket.OPEN) {
+      if (ws) {
         ws.close();
       }
     };
@@ -96,10 +116,10 @@ export default function Header() {
             {price !== null && (
               <div className="flex items-center space-x-2">
                 <span className="text-[#FFD700] font-semibold">
-                  ${price.toLocaleString()}
+                  ${Number(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
                 <span className={`text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {priceChange > 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
+                  {priceChange >= 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
                 </span>
               </div>
             )}
