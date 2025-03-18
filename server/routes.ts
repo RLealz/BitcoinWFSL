@@ -5,7 +5,7 @@ import { insertLeadSchema, leads } from "@shared/schema";
 import fetch from "node-fetch";
 import { setupAuth } from "./auth";
 import { db } from "./db";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 
 // Type for structured error responses
@@ -128,6 +128,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(allLeads);
     } catch (error) {
       console.error("Error fetching leads:", error);
+      next(error);
+    }
+  });
+
+  // Add delete endpoint
+  app.delete("/api/admin/leads/:id", requireAuth, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        throw new ApiError("Invalid ID", 400, "INVALID_ID");
+      }
+
+      const [deletedLead] = await db.delete(leads)
+        .where(eq(leads.id, id))
+        .returning();
+
+      if (!deletedLead) {
+        throw new ApiError("Lead not found", 404, "NOT_FOUND");
+      }
+
+      console.log(`Deleted lead with ID: ${id}`);
+      res.json(deletedLead);
+    } catch (error) {
+      console.error("Error deleting lead:", error);
       next(error);
     }
   });
