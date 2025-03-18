@@ -4,6 +4,8 @@ import { insertLeadSchema, type InsertLead } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useRef, useState } from "react";
 import {
   Form,
   FormControl,
@@ -26,6 +28,9 @@ import { motion } from "framer-motion";
 
 export default function Contact() {
   const { toast } = useToast();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
   const form = useForm<InsertLead>({
     resolver: zodResolver(insertLeadSchema),
     defaultValues: {
@@ -39,7 +44,14 @@ export default function Contact() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertLead) => {
-      const res = await apiRequest("POST", "/api/leads", data);
+      if (!captchaToken) {
+        throw new Error("Por favor, complete o captcha");
+      }
+
+      const res = await apiRequest("POST", "/api/leads", {
+        ...data,
+        captchaToken
+      });
       return res.json();
     },
     onSuccess: () => {
@@ -48,11 +60,13 @@ export default function Contact() {
         description: "Obrigado pelo seu interesse. Entraremos em contato em breve!",
       });
       form.reset();
+      setCaptchaToken(null);
+      recaptchaRef.current?.reset();
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Erro",
-        description: "Algo deu errado. Por favor, tente novamente.",
+        description: error instanceof Error ? error.message : "Algo deu errado. Por favor, tente novamente.",
         variant: "destructive",
       });
     },
@@ -173,10 +187,19 @@ export default function Contact() {
                 )}
               />
 
+              <div className="flex justify-center mb-6">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                  onChange={(token: string | null) => setCaptchaToken(token)}
+                  theme="dark"
+                />
+              </div>
+
               <Button
                 type="submit"
                 className="w-full bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-semibold"
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || !captchaToken}
               >
                 {mutation.isPending ? "Enviando..." : "Enviar Mensagem"}
               </Button>
