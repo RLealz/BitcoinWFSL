@@ -37,19 +37,22 @@ export default function Features() {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 text-white">O que Oferecemos</h2>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {features.map((feature, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
+              transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
+              className="h-full"
             >
-              <Card className="bg-black/20 border-white/10">
-                <CardContent className="pt-6">
-                  <div className="mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
+              <Card className="bg-black/20 border-white/10 h-full">
+                <CardContent className="p-6 flex flex-col items-center text-center">
+                  <div className="mb-4 rounded-full bg-black/30 p-3">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-white">{feature.title}</h3>
                   <p className="text-white/80">{feature.description}</p>
                 </CardContent>
               </Card>
