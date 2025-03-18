@@ -18,11 +18,13 @@ export default function Header() {
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      const newPrice = parseFloat(data.c);
+      // Convert USD to EUR (approximate conversion rate)
+      const usdPrice = parseFloat(data.c);
+      const eurPrice = usdPrice * 0.92; // Using a fixed conversion rate for simplicity
       if (price !== null) {
         setPriceChange(parseFloat(data.P));
       }
-      setPrice(newPrice);
+      setPrice(eurPrice);
     };
 
     return () => ws.close();
@@ -44,19 +46,13 @@ export default function Header() {
               onClick={() => handleScroll("features")}
               className="text-white hover:text-[#FFD700] transition-colors"
             >
-              Recursos
+              Serviços
             </button>
             <button
               onClick={() => handleScroll("benefits")}
               className="text-white hover:text-[#FFD700] transition-colors"
             >
               Planos
-            </button>
-            <button
-              onClick={() => handleScroll("calculator")}
-              className="text-white hover:text-[#FFD700] transition-colors"
-            >
-              Calculadora
             </button>
             <button
               onClick={() => handleScroll("contact")}
@@ -71,7 +67,7 @@ export default function Header() {
             {price && (
               <div className="flex items-center space-x-2">
                 <span className="text-[#FFD700] font-semibold">
-                  ${price.toLocaleString()}
+                  €{price.toLocaleString('pt-PT', { maximumFractionDigits: 2 })}
                 </span>
                 <span className={`text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {priceChange > 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
