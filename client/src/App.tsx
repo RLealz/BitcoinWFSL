@@ -8,6 +8,7 @@ import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth";
 import AdminDashboard from "@/pages/admin/dashboard";
+import Header from "@/components/sections/header";
 import Footer from "@/components/sections/footer";
 
 function Router() {
@@ -26,7 +27,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="flex flex-col min-h-screen">
-          <main className="flex-grow">
+          <Header />
+          <main className="flex-grow pt-16">
             <Router />
           </main>
           <Footer />
