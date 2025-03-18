@@ -1,17 +1,15 @@
 import { motion } from "framer-motion";
 
 const investmentPlans = [
-  { initial: "100 €", final: "130 €", return: "30%" },
-  { initial: "500 €", final: "650 €", return: "30%" },
-  { initial: "1000 €", final: "1300 €", return: "30%" },
-  { initial: "2500 €", final: "3250 €", return: "30%" },
-  { initial: "5000 €", final: "6500 €", return: "30%" },
-  { initial: "10000 €", final: "13000 €", return: "30%" },
+  { tier: "Bronze", initial: "1.000 €", minReturn: "100 €", maxReturn: "180 €" },
+  { tier: "Prata", initial: "2.500 €", minReturn: "250 €", maxReturn: "350 €" },
+  { tier: "Ouro", initial: "5.000 €", minReturn: "500 €", maxReturn: "750 €" },
+  { tier: "Diamante", initial: "10.000+ €", minReturn: "1.000 €", maxReturn: "1.500 €" },
 ];
 
 export default function Benefits() {
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -23,13 +21,14 @@ export default function Benefits() {
           <h2 className="text-4xl font-bold mb-8 text-center text-gradient">
             Os Nossos Planos de Investimento
           </h2>
-          <div className="overflow-x-auto rounded-lg border border-border shadow-lg">
+          <div className="overflow-x-auto rounded-lg border border-white/10 shadow-lg bg-black/20">
             <table className="w-full">
               <thead>
-                <tr className="bg-primary/5">
+                <tr className="border-b border-white/10">
+                  <th className="px-6 py-4 text-left font-semibold text-primary">Nível</th>
                   <th className="px-6 py-4 text-left font-semibold text-primary">Capital Inicial</th>
-                  <th className="px-6 py-4 text-left font-semibold text-primary">Capital em 1 Mês</th>
-                  <th className="px-6 py-4 text-left font-semibold text-primary">Retorno em 1 Mês</th>
+                  <th className="px-6 py-4 text-left font-semibold text-primary">Retorno Mensal Mínimo</th>
+                  <th className="px-6 py-4 text-left font-semibold text-primary">Retorno Mensal Máximo</th>
                 </tr>
               </thead>
               <tbody>
@@ -40,17 +39,18 @@ export default function Benefits() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     viewport={{ once: true }}
-                    className="border-b hover:bg-primary/5 transition-colors"
+                    className="border-b border-white/10 hover:bg-white/5 transition-colors"
                   >
-                    <td className="px-6 py-4 font-medium">{plan.initial}</td>
-                    <td className="px-6 py-4 text-success">{plan.final}</td>
-                    <td className="px-6 py-4 text-primary">{plan.return}</td>
+                    <td className="px-6 py-4 font-medium text-white">{plan.tier}</td>
+                    <td className="px-6 py-4 text-white">{plan.initial}</td>
+                    <td className="px-6 py-4 text-primary">{plan.minReturn}</td>
+                    <td className="px-6 py-4 text-primary">{plan.maxReturn}</td>
                   </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p className="text-sm text-muted-foreground mt-6 text-center">
+          <p className="text-sm text-white/80 mt-6 text-center">
             * Os retornos apresentados são estimativas e podem variar de acordo com as condições do mercado.
           </p>
         </motion.div>
