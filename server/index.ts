@@ -22,7 +22,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "'wasm-unsafe-eval'", "https://www.google.com/recaptcha/", "https://www.gstatic.com/"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "wss://stream.binance.com:9443", "https://www.google.com/recaptcha/", "ws://stream.binance.com:9443"],
+      connectSrc: ["'self'", "wss://stream.binance.com:9443", "ws://stream.binance.com:9443", "https://www.google.com/recaptcha/"],
       frameSrc: ["'self'", "https://www.google.com/recaptcha/"],
       workerSrc: ["'self'", "blob:"],
       childSrc: ["'self'", "blob:"],
@@ -41,20 +41,6 @@ app.use((req, res, next) => {
   res.setHeader("X-XSS-Protection", "1; mode=block");
   next();
 });
-
-// Development security
-if (process.env.NODE_ENV === 'development') {
-  app.use((req, res, next) => {
-    const allowedDevPaths = ['/node_modules', '/@vite', '/@fs', '/@react-refresh'];
-    if (allowedDevPaths.some(path => req.path.startsWith(path))) {
-      const ip = req.ip || req.connection.remoteAddress;
-      if (!['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(ip)) {
-        return res.status(403).send('Access Denied');
-      }
-    }
-    next();
-  });
-}
 
 // API rate limiting
 const limiter = rateLimit({

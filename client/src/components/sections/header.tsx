@@ -14,26 +14,44 @@ export default function Header() {
   };
 
   useEffect(() => {
+    console.log("Setting up WebSocket connection");
     const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
 
+    ws.onopen = () => {
+      console.log("WebSocket connection opened");
+    };
+
     ws.onmessage = (event) => {
+      console.log("Received WebSocket message:", event.data);
       try {
         const data = JSON.parse(event.data);
         if (data && data.c) {
+          console.log("Setting new price:", data.c);
           setPrice(parseFloat(data.c));
           setPriceChange(parseFloat(data.P));
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error processing WebSocket message:", error);
       }
     };
 
-    return () => ws.close();
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+
+    return () => {
+      console.log("Cleaning up WebSocket connection");
+      ws.close();
+    };
   }, []);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-sm border-b border-white/10">
-      <div className="container mx-auto px-6">
+      <nav className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
@@ -42,7 +60,7 @@ export default function Header() {
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-8">
             <button
               onClick={() => handleScroll("servicos")}
               className="text-white hover:text-[#FFD700] transition-colors"
@@ -67,18 +85,20 @@ export default function Header() {
             >
               Contato
             </button>
-          </nav>
+          </div>
 
-          {/* Price and Auth Buttons */}
+          {/* Price Display and Auth */}
           <div className="flex items-center space-x-4">
-            <div className="price-display flex items-center space-x-2">
-              <span className="text-[#FFD700] font-semibold">
-                {price ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '--'}
-              </span>
-              {price && (
-                <span className={`text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {priceChange >= 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
-                </span>
+            <div className="price-display text-[#FFD700] font-semibold">
+              {price ? (
+                <>
+                  <span>${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span className={`ml-2 text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    {priceChange >= 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
+                  </span>
+                </>
+              ) : (
+                <span>--</span>
               )}
             </div>
 
@@ -97,7 +117,7 @@ export default function Header() {
             )}
           </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }
