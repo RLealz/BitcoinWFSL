@@ -18,7 +18,7 @@ export default function Benefits() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto"
         >
-          <h2 className="text-4xl font-bold mb-8 text-center text-white">
+          <h2 className="text-4xl font-bold mb-8 text-center text-[#FFD700]">
             Os Nossos Planos de Investimento
           </h2>
           <div className="overflow-x-auto rounded-lg border border-white/10 shadow-lg bg-black/20">
@@ -33,7 +33,7 @@ export default function Benefits() {
               </thead>
               <tbody>
                 {investmentPlans.map((plan, index) => (
-                  <motion.tr 
+                  <motion.tr
                     key={index}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}

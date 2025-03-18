@@ -62,7 +62,7 @@ export default function Calculator() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto"
         >
-          <h2 className="text-4xl font-bold mb-8 text-center text-white">
+          <h2 className="text-4xl font-bold mb-8 text-center text-[#FFD700]">
             Calculadora de Investimento
           </h2>
 

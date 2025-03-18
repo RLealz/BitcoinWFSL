@@ -18,7 +18,7 @@ export default function CTA() {
         >
           <Card className="bg-black/20 border-white/10">
             <CardContent className="p-12 text-center">
-              <h2 className="text-4xl font-bold mb-4 text-white">
+              <h2 className="text-4xl font-bold mb-4 text-[#FFD700]">
                 Pronto para Começar sua Jornada de Investimento?
               </h2>
               <p className="text-lg mb-8 text-white/80">

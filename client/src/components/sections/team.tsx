@@ -21,7 +21,7 @@ export default function Team() {
     <section className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-white">A Nossa Equipa</h2>
+          <h2 className="text-4xl font-bold mb-4 text-[#FFD700]">A Nossa Equipa</h2>
         </div>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {team.map((member, index) => (

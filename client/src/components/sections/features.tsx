@@ -40,7 +40,7 @@ export default function Features() {
     <section id="features" className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-white">O que Oferecemos</h2>
+          <h2 className="text-4xl font-bold mb-4 text-[#FFD700]">O que Oferecemos</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {features.map((feature, index) => (
