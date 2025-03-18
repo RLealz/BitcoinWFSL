@@ -34,7 +34,7 @@ export default function Hero() {
             </p>
             <Button
               size="lg"
-              onClick={() => handleScroll("features")}
+              onClick={() => handleScroll("servicos")}
               className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-semibold"
             >
               Comece a Investir

@@ -43,7 +43,7 @@ export default function Header() {
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <button
-              onClick={() => handleScroll("features")}
+              onClick={() => handleScroll("servicos")}
               className="text-white hover:text-[#FFD700] transition-colors"
             >
               Serviços

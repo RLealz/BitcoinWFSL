@@ -37,7 +37,7 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-24 gradient-background">
+    <section id="servicos" className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 text-[#FFD700]">O que Oferecemos</h2>

@@ -7,14 +7,34 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// Function to get CSRF token
+async function getCsrfToken(): Promise<string> {
+  const res = await fetch('/api/csrf-token', { credentials: 'include' });
+  await throwIfResNotOk(res);
+  const data = await res.json();
+  return data.csrfToken;
+}
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  const headers: Record<string, string> = {};
+
+  if (data) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  // Add CSRF token for non-GET requests
+  if (method !== 'GET') {
+    const csrfToken = await getCsrfToken();
+    headers['CSRF-Token'] = csrfToken;
+  }
+
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
