@@ -36,8 +36,9 @@ export default function Calculator() {
     else if (investment >= INVESTMENT_TIERS.BRONZE.min) tier = INVESTMENT_TIERS.BRONZE;
     else return { min: investment, max: investment };
 
-    // Calculate min and max returns
-    // Compound interest calculation including initial investment
+    // Calculate compound interest for min and max returns
+    // Using the formula: P * (1 + r)^t
+    // where P is principal, r is monthly rate, t is number of months
     const minTotal = investment * Math.pow(1 + tier.minReturn, duration);
     const maxTotal = investment * Math.pow(1 + tier.maxReturn, duration);
 
