@@ -16,13 +16,41 @@ export default function Header() {
   useEffect(() => {
     const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setPrice(parseFloat(data.c));
-      setPriceChange(parseFloat(data.P));
+    ws.onopen = () => {
+      console.log('WebSocket connected to Binance');
     };
 
-    return () => ws.close();
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log('Received price data:', data);
+
+        if (data && data.c) {
+          const newPrice = parseFloat(data.c);
+          setPrice(newPrice);
+
+          if (data.P) {
+            setPriceChange(parseFloat(data.P));
+          }
+        }
+      } catch (error) {
+        console.error('Error processing price data:', error);
+      }
+    };
+
+    return () => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.close();
+      }
+    };
   }, []);
 
   return (
