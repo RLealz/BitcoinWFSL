@@ -6,6 +6,11 @@ import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import { doubleCsrf } from "csrf-csrf";
 import { randomBytes } from 'crypto';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -141,20 +146,29 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // For production, add a proper fallback route for the SPA
-  app.use((_req: Request, res: Response) => {
-    if (process.env.NODE_ENV === 'production') {
-      res.sendFile('index.html', { root: './dist/public' });
-    } else {
-      res.status(404).json({ message: "Not Found" });
-    }
-  });
-
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
+
+  // Setup error handling for unhandled routes
+  app.use((_req: Request, res: Response, next: NextFunction) => {
+    if (process.env.NODE_ENV === 'production') {
+      const publicPath = path.resolve(__dirname, '../dist/public');
+      res.sendFile('index.html', { 
+        root: publicPath,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+    } else {
+      // In development, let Vite handle the routing
+      next();
+    }
+  });
 
   const port = 5000;
   server.listen({
