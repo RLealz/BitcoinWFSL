@@ -112,16 +112,18 @@ function errorHandler(
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Security middleware
+  // Security middleware with updated CSP
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'wasm-unsafe-eval'", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/"],
         frameSrc: ["'self'", "https://www.google.com/recaptcha/"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", "data:", "https:"],
         connectSrc: ["'self'"],
+        workerSrc: ["'self'", "blob:"],
+        childSrc: ["'self'", "blob:"],
       },
     },
     crossOriginEmbedderPolicy: false, // Required for reCAPTCHA
