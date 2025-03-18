@@ -46,9 +46,6 @@ export default function Footer() {
                 <SiTelegram className="h-8 w-8" />
               </a>
             </div>
-            <p className="text-white/60 text-sm mt-4">
-              © {new Date().getFullYear()} Bitcoin WFSL. Todos os direitos reservados.
-            </p>
           </div>
 
           {/* Support Section */}
@@ -59,6 +56,13 @@ export default function Footer() {
               <p className="text-white">DeafPro DAO 2025</p>
             </div>
           </div>
+        </div>
+
+        {/* Copyright - Bottom Right */}
+        <div className="mt-8 border-t border-white/10 pt-4">
+          <p className="text-white/60 text-sm text-right">
+            © 2025 Bitcoin WFSL. Todos os direitos reservados.
+          </p>
         </div>
       </div>
     </footer>
