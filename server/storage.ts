@@ -1,30 +1,51 @@
-import { leads, type Lead, type InsertLead } from "@shared/schema";
+import { users, leads, type User, type InsertUser, type Lead, type InsertLead } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
+
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   createLead(lead: InsertLead): Promise<Lead>;
+  getUser(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  sessionStore: session.Store;
 }
 
-export class MemStorage implements IStorage {
-  private leads: Map<number, Lead>;
-  private currentId: number;
+export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
 
   constructor() {
-    this.leads = new Map();
-    this.currentId = 1;
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true,
+    });
   }
 
   async createLead(insertLead: InsertLead): Promise<Lead> {
-    console.log("Creating new lead in storage...");
-    const id = this.currentId++;
-    const lead: Lead = {
-      ...insertLead,
-      id,
-      createdAt: new Date(),
-    };
-    this.leads.set(id, lead);
-    console.log(`Lead created with ID: ${id}`);
+    console.log("Creating new lead in database...");
+    const [lead] = await db.insert(leads).values(insertLead).returning();
+    console.log(`Lead created with ID: ${lead.id}`);
     return lead;
+  }
+
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
