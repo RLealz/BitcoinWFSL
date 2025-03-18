@@ -16,9 +16,23 @@ import { Loader2, LogOut } from "lucide-react";
 
 export default function AdminDashboard() {
   const { logoutMutation } = useAuth();
-  const { data: leads, isLoading } = useQuery<Lead[]>({
+
+  // Add error handling to the query
+  const { data: leads, isLoading, error } = useQuery<Lead[]>({
     queryKey: ["/api/admin/leads"],
+    retry: false // Don't retry on failure
   });
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-red-500">
+          Error loading leads: {error instanceof Error ? error.message : "Unknown error"}
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

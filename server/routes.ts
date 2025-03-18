@@ -53,7 +53,7 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
 
 function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (!req.isAuthenticated()) {
-    throw new ApiError("Unauthorized", 401, "UNAUTHORIZED");
+    return res.status(401).json({ message: "Unauthorized" });
   }
   next();
 }
@@ -122,9 +122,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Protected routes (admin only)
   app.get("/api/admin/leads", requireAuth, async (req, res, next) => {
     try {
+      console.log("Fetching leads for authenticated user:", req.user);
       const allLeads = await db.select().from(leads).orderBy(desc(leads.createdAt));
+      console.log(`Found ${allLeads.length} leads`);
       res.json(allLeads);
     } catch (error) {
+      console.error("Error fetching leads:", error);
       next(error);
     }
   });
