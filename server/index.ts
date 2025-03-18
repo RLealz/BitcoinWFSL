@@ -27,8 +27,8 @@ app.use(helmet({
       upgradeInsecureRequests: [],
     },
   },
-  crossOriginEmbedderPolicy: false, // Required for reCAPTCHA
-  crossOriginResourcePolicy: { policy: "cross-origin" }, // Required for external resources
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: { policy: "cross-origin" },
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
 }));
 
@@ -40,36 +40,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Add development-specific request validation
-app.use((req, res, next) => {
-  // Block direct access to development server endpoints except from localhost
-  if (process.env.NODE_ENV === 'development' && 
-      (req.path.startsWith('/@') || req.path.startsWith('/node_modules'))) {
-    const allowedIPs = ['127.0.0.1', '::1', '::ffff:127.0.0.1'];
-    const clientIP = req.ip || req.connection.remoteAddress;
-
-    if (!allowedIPs.includes(clientIP)) {
-      return res.status(403).json({ message: 'Access Denied' });
-    }
-  }
-  next();
-});
-
-// Development-only security controls
+// Development security
 if (process.env.NODE_ENV === 'development') {
-  // Add whitelist for development tools
   app.use((req, res, next) => {
-    const allowedDevPaths = [
-      '/node_modules',
-      '/@vite',
-      '/@fs',
-      '/@react-refresh'
-    ];
-
-    // Only allow dev tool access from localhost
+    const allowedDevPaths = ['/node_modules', '/@vite', '/@fs', '/@react-refresh'];
     if (allowedDevPaths.some(path => req.path.startsWith(path))) {
       const ip = req.ip || req.connection.remoteAddress;
-      if (ip !== '127.0.0.1' && ip !== '::1' && ip !== '::ffff:127.0.0.1') {
+      if (!['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(ip)) {
         return res.status(403).send('Access Denied');
       }
     }
@@ -77,20 +54,21 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// Rate limiting
+// API rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100
 });
 app.use("/api/", limiter);
 
+// Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// CSRF protection setup
+// CSRF protection
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => process.env.SESSION_SECRET || randomBytes(32).toString('hex'), // Fallback for development
+  getSecret: () => process.env.SESSION_SECRET || randomBytes(32).toString('hex'),
   cookieName: "x-csrf-token",
   cookieOptions: {
     httpOnly: true,
@@ -99,15 +77,12 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
   },
 });
 
-// Apply CSRF protection to all POST endpoints
 app.use('/api', doubleCsrfProtection);
-
-// Provide CSRF token to client
 app.get('/api/csrf-token', (req, res) => {
   res.json({ csrfToken: generateToken(req, res) });
 });
 
-// Request logging middleware with sensitive data redaction
+// Request logging
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -124,19 +99,13 @@ app.use((req, res, next) => {
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
-        // Sanitize sensitive data before logging
         const sanitizedResponse = { ...capturedJsonResponse };
         delete sanitizedResponse.password;
         delete sanitizedResponse.token;
         delete sanitizedResponse.csrfToken;
         logLine += ` :: ${JSON.stringify(sanitizedResponse)}`;
       }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
+      log(logLine.length > 80 ? logLine.slice(0, 79) + "…" : logLine);
     }
   });
 
@@ -146,16 +115,13 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
+  if (process.env.NODE_ENV === 'production') {
+    // Serve static files in production
+    const publicPath = path.resolve(__dirname, '../dist/public');
+    app.use(express.static(publicPath));
 
-  // Setup error handling for unhandled routes
-  app.use((_req: Request, res: Response, next: NextFunction) => {
-    if (process.env.NODE_ENV === 'production') {
-      const publicPath = path.resolve(__dirname, '../dist/public');
+    // Production SPA fallback
+    app.use('*', (_req: Request, res: Response) => {
       res.sendFile('index.html', { 
         root: publicPath,
         headers: {
@@ -164,11 +130,11 @@ app.use((req, res, next) => {
           'Expires': '0'
         }
       });
-    } else {
-      // In development, let Vite handle the routing
-      next();
-    }
-  });
+    });
+  } else {
+    // Development mode - let Vite handle everything
+    await setupVite(app, server);
+  }
 
   const port = 5000;
   server.listen({
