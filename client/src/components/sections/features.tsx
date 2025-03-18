@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkle, Shield, Users, HeadphonesIcon, Video } from "lucide-react";
+import { Sparkle, Shield, Users, HeadphonesIcon, Video, Users2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const features = [
@@ -28,6 +28,11 @@ const features = [
     title: "Suporte por Videochamada",
     description: "Oferecemos suporte por videochamada WhatsApp em Língua Gestual Portuguesa e Gesto Internacional.",
   },
+  {
+    icon: <Users2 className="h-8 w-8 text-primary" />,
+    title: "Comunidade de Investidores",
+    description: "Acesso a uma comunidade exclusiva de investidores para compartilhar experiências e conhecimentos.",
+  }
 ];
 
 export default function Features() {
