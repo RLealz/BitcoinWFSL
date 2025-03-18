@@ -163,11 +163,10 @@ export default function Contact() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="0-100">Até 100€</SelectItem>
-                        <SelectItem value="100-500">100€ - 500€</SelectItem>
-                        <SelectItem value="500-1000">500€ - 1000€</SelectItem>
-                        <SelectItem value="1000-5000">1000€ - 5000€</SelectItem>
-                        <SelectItem value="5000+">Mais de 5000€</SelectItem>
+                        <SelectItem value="bronze">Bronze (1.000 €)</SelectItem>
+                        <SelectItem value="prata">Prata (2.500 €)</SelectItem>
+                        <SelectItem value="ouro">Ouro (5.000 €)</SelectItem>
+                        <SelectItem value="diamante">Diamante (10.000+ €)</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
