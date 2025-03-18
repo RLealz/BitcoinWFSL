@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body, #root {
+    @apply font-sans antialiased text-foreground min-h-screen;
+    background: linear-gradient(135deg, #1a1a2e 0%, #4a1578 100%);
+  }
+}
+
+@layer utilities {
+  .gradient-background {
+    background: linear-gradient(135deg, #1a1a2e 0%, #4a1578 100%);
+    @apply text-white relative z-10;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80;
+  }
+}
+
+/* Custom animations */
 .bitcoin-symbol {
   font-size: 160px;
   color: #F7931A;
@@ -18,23 +41,18 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body, #root {
-    @apply font-sans antialiased text-foreground min-h-screen bg-background;
-  }
+/* Smooth section transitions */
+section {
+  position: relative;
+  overflow: hidden;
 }
 
-@layer utilities {
-  .gradient-background {
-    background: linear-gradient(135deg, #1a1a2e 0%, #4a1578 100%);
-    @apply text-white;
-  }
-
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80;
-  }
+section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 }

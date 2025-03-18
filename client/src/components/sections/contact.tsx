@@ -64,7 +64,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24">
+    <section id="contact" className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -74,7 +74,7 @@ export default function Contact() {
           className="max-w-4xl mx-auto"
         >
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Contacte-nos</h2>
+            <h2 className="text-4xl font-bold mb-4 text-white">Contacte-nos</h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-12">
@@ -82,21 +82,21 @@ export default function Contact() {
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
                   <Mail className="h-5 w-5 text-primary" />
-                  <p>geral.bitcoinwfsl@proton.me</p>
+                  <p className="text-white">geral.bitcoinwfsl@proton.me</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-primary" />
-                  <p>+351 913 207 651</p>
+                  <p className="text-white">+351 913 207 651</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-primary" />
-                  <p>Rua da Inovação, 123, 1000-001 Lisboa, Portugal</p>
+                  <p className="text-white">Rua da Inovação, 123, 1000-001 Lisboa, Portugal</p>
                 </div>
               </div>
 
               <div className="mt-12">
-                <h3 className="text-lg font-semibold mb-4">Com o apoio de:</h3>
-                <div className="space-y-2">
+                <h3 className="text-lg font-semibold mb-4 text-white">Com o apoio de:</h3>
+                <div className="space-y-2 text-white/80">
                   <p>FMLG</p>
                   <p>DeafPro DAO 2025</p>
                 </div>
@@ -110,9 +110,9 @@ export default function Contact() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nome</FormLabel>
+                      <FormLabel className="text-white">Nome</FormLabel>
                       <FormControl>
-                        <Input placeholder="Seu nome" {...field} />
+                        <Input placeholder="Seu nome" {...field} className="bg-black/20 border-white/10 text-white placeholder:text-white/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -124,9 +124,9 @@ export default function Contact() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-white">Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="Seu email" {...field} />
+                        <Input placeholder="Seu email" {...field} className="bg-black/20 border-white/10 text-white placeholder:text-white/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -138,12 +138,13 @@ export default function Contact() {
                   name="phone"
                   render={({ field: { value, ...fieldProps } }) => (
                     <FormItem>
-                      <FormLabel>Telefone (Opcional)</FormLabel>
+                      <FormLabel className="text-white">Telefone (Opcional)</FormLabel>
                       <FormControl>
                         <Input 
                           placeholder="Seu número de telefone" 
                           value={value ?? ''} 
                           {...fieldProps} 
+                          className="bg-black/20 border-white/10 text-white placeholder:text-white/50"
                         />
                       </FormControl>
                       <FormMessage />
@@ -156,13 +157,13 @@ export default function Contact() {
                   name="investmentRange"
                   render={({ field: { value, ...fieldProps } }) => (
                     <FormItem>
-                      <FormLabel>Faixa de Investimento</FormLabel>
+                      <FormLabel className="text-white">Faixa de Investimento</FormLabel>
                       <Select
                         onValueChange={fieldProps.onChange}
                         value={value ?? undefined}
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-black/20 border-white/10 text-white">
                             <SelectValue placeholder="Selecione o valor de investimento" />
                           </SelectTrigger>
                         </FormControl>
@@ -184,12 +185,13 @@ export default function Contact() {
                   name="message"
                   render={({ field: { value, ...fieldProps } }) => (
                     <FormItem>
-                      <FormLabel>Mensagem</FormLabel>
+                      <FormLabel className="text-white">Mensagem</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Conte-nos sobre seus objetivos de investimento"
                           value={value ?? ''}
                           {...fieldProps}
+                          className="bg-black/20 border-white/10 text-white placeholder:text-white/50"
                         />
                       </FormControl>
                       <FormMessage />
@@ -199,7 +201,7 @@ export default function Contact() {
 
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full bg-primary text-white hover:bg-primary/90"
                   disabled={mutation.isPending}
                 >
                   {mutation.isPending ? "Enviando..." : "Enviar Mensagem"}
