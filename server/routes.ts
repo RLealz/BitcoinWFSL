@@ -26,23 +26,33 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/leads", async (req, res) => {
     try {
+      console.log("Received lead submission request");
       const { captchaToken, ...leadData } = req.body;
 
       // Validate lead data
+      console.log("Validating lead data...");
       const validatedData = insertLeadSchema.parse(leadData);
+      console.log("Lead data validation successful");
 
       // Verify reCAPTCHA
       if (!captchaToken) {
+        console.log("reCAPTCHA token missing");
         return res.status(400).json({ message: "reCAPTCHA token is required" });
       }
 
+      console.log("Verifying reCAPTCHA token...");
       const isValidCaptcha = await verifyRecaptcha(captchaToken);
       if (!isValidCaptcha) {
+        console.log("Invalid reCAPTCHA token");
         return res.status(400).json({ message: "Invalid reCAPTCHA" });
       }
+      console.log("reCAPTCHA verification successful");
 
       // Store lead
+      console.log("Storing lead data...");
       const lead = await storage.createLead(validatedData);
+      console.log("Lead stored successfully:", lead);
+
       res.json(lead);
     } catch (error) {
       console.error("Lead creation error:", error);

@@ -14,6 +14,7 @@ export class MemStorage implements IStorage {
   }
 
   async createLead(insertLead: InsertLead): Promise<Lead> {
+    console.log("Creating new lead in storage...");
     const id = this.currentId++;
     const lead: Lead = {
       ...insertLead,
@@ -21,6 +22,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
     };
     this.leads.set(id, lead);
+    console.log(`Lead created with ID: ${id}`);
     return lead;
   }
 }

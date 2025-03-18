@@ -48,13 +48,19 @@ export default function Contact() {
         throw new Error("Por favor, complete o captcha");
       }
 
+      console.log("Submitting form data:", { ...data, captchaToken: "HIDDEN" });
+
       const res = await apiRequest("POST", "/api/leads", {
         ...data,
         captchaToken
       });
-      return res.json();
+
+      const result = await res.json();
+      console.log("Form submission response:", result);
+      return result;
     },
     onSuccess: () => {
+      console.log("Form submitted successfully");
       toast({
         title: "Sucesso",
         description: "Obrigado pelo seu interesse. Entraremos em contato em breve!",
@@ -64,6 +70,7 @@ export default function Contact() {
       recaptchaRef.current?.reset();
     },
     onError: (error) => {
+      console.error("Form submission error:", error);
       toast({
         title: "Erro",
         description: error instanceof Error ? error.message : "Algo deu errado. Por favor, tente novamente.",
