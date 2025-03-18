@@ -26,9 +26,8 @@ export default function CTA() {
               </p>
               <Button
                 size="lg"
-                variant="secondary"
                 onClick={() => handleScroll("contact")}
-                className="bg-primary text-white hover:bg-primary/90"
+                className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-semibold"
               >
                 Comece Agora
               </Button>
