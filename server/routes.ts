@@ -7,6 +7,8 @@ import { setupAuth } from "./auth";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 // Type for structured error responses
 interface ApiError {
@@ -28,6 +30,14 @@ class ApiError extends Error {
   }
 }
 
+// Strict type checking for reCAPTCHA response
+interface RecaptchaResponse {
+  success: boolean;
+  challenge_ts?: string;
+  hostname?: string;
+  "error-codes"?: string[];
+}
+
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
   if (!recaptchaSecret) {
@@ -44,9 +54,20 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
       body: `secret=${recaptchaSecret}&response=${token}`,
     });
 
-    const data = await response.json() as { success: boolean };
+    const data = await response.json() as RecaptchaResponse;
+
+    if (!data.success && data["error-codes"]?.length) {
+      throw new ApiError(
+        "reCAPTCHA verification failed",
+        400,
+        "RECAPTCHA_ERROR",
+        data["error-codes"]
+      );
+    }
+
     return data.success;
   } catch (error) {
+    if (error instanceof ApiError) throw error;
     throw new ApiError("Failed to verify reCAPTCHA", 500, "RECAPTCHA_ERROR");
   }
 }
@@ -83,6 +104,7 @@ function errorHandler(
     });
   }
 
+  // Don't expose internal errors to client
   res.status(500).json({
     message: "Internal server error",
     code: "INTERNAL_ERROR",
@@ -90,11 +112,44 @@ function errorHandler(
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Security middleware
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/"],
+        frameSrc: ["'self'", "https://www.google.com/recaptcha/"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Required for reCAPTCHA
+  }));
+
+  // Rate limiting for public endpoints
+  const publicLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100, // Limit each IP to 100 requests per windowMs
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: { message: "Too many requests, please try again later" }
+  });
+
+  // Rate limiting for admin endpoints
+  const adminLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 300,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: { message: "Too many requests, please try again later" }
+  });
+
   // Set up authentication
   setupAuth(app);
 
-  // Public routes
-  app.post("/api/leads", async (req, res, next) => {
+  // Public routes with rate limiting
+  app.post("/api/leads", publicLimiter, async (req, res, next) => {
     try {
       const { captchaToken, ...leadData } = req.body;
 
@@ -119,8 +174,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Protected routes (admin only)
-  app.get("/api/admin/leads", requireAuth, async (req, res, next) => {
+  // Protected routes (admin only) with rate limiting
+  app.get("/api/admin/leads", requireAuth, adminLimiter, async (req, res, next) => {
     try {
       console.log("Fetching leads for authenticated user:", req.user);
       const allLeads = await db.select().from(leads).orderBy(desc(leads.createdAt));
@@ -132,8 +187,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Add delete endpoint
-  app.delete("/api/admin/leads/:id", requireAuth, async (req, res, next) => {
+  // Add delete endpoint with proper validation
+  app.delete("/api/admin/leads/:id", requireAuth, adminLimiter, async (req, res, next) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
