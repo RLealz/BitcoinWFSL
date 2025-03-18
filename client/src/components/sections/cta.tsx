@@ -8,7 +8,7 @@ export default function CTA() {
   };
 
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -16,19 +16,19 @@ export default function CTA() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <Card className="bg-primary text-white">
+          <Card className="bg-black/20 border-white/10">
             <CardContent className="p-12 text-center">
-              <h2 className="text-4xl font-bold mb-4">
+              <h2 className="text-4xl font-bold mb-4 text-white">
                 Pronto para Começar sua Jornada de Investimento?
               </h2>
-              <p className="text-lg mb-8 text-white/90">
+              <p className="text-lg mb-8 text-white/80">
                 Junte-se à nossa plataforma hoje e assuma o controle do seu futuro financeiro
               </p>
               <Button
                 size="lg"
                 variant="secondary"
                 onClick={() => handleScroll("contact")}
-                className="bg-white text-primary hover:bg-white/90"
+                className="bg-primary text-white hover:bg-primary/90"
               >
                 Comece Agora
               </Button>

@@ -18,10 +18,10 @@ const team = [
 
 export default function Team() {
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">A Nossa Equipa</h2>
+          <h2 className="text-4xl font-bold mb-4 text-white">A Nossa Equipa</h2>
         </div>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {team.map((member, index) => (
@@ -32,18 +32,18 @@ export default function Team() {
               transition={{ delay: index * 0.2 }}
               viewport={{ once: true }}
             >
-              <Card>
+              <Card className="bg-black/20 border-white/10">
                 <CardContent className="pt-6">
                   <img
                     src={member.image}
                     alt={member.name}
                     className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
                   />
-                  <h3 className="text-xl font-semibold text-center mb-2">
+                  <h3 className="text-xl font-semibold text-center mb-2 text-white">
                     {member.name}
                   </h3>
                   <p className="text-primary text-center mb-4">{member.role}</p>
-                  <p className="text-muted-foreground text-center">
+                  <p className="text-white/80 text-center">
                     {member.description}
                   </p>
                 </CardContent>

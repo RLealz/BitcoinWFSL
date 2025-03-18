@@ -32,10 +32,10 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-24 bg-gray-50">
+    <section id="features" className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">O que Oferecemos</h2>
+          <h2 className="text-4xl font-bold mb-4 text-white">O que Oferecemos</h2>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
@@ -46,11 +46,11 @@ export default function Features() {
               transition={{ delay: index * 0.2 }}
               viewport={{ once: true }}
             >
-              <Card>
+              <Card className="bg-black/20 border-white/10">
                 <CardContent className="pt-6">
                   <div className="mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
+                  <p className="text-white/80">{feature.description}</p>
                 </CardContent>
               </Card>
             </motion.div>
