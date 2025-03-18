@@ -5,6 +5,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import { doubleCsrf } from "csrf-csrf";
+import { randomBytes } from 'crypto';
 
 const app = express();
 
@@ -34,6 +35,43 @@ app.use((req, res, next) => {
   next();
 });
 
+// Add development-specific request validation
+app.use((req, res, next) => {
+  // Block direct access to development server endpoints except from localhost
+  if (process.env.NODE_ENV === 'development' && 
+      (req.path.startsWith('/@') || req.path.startsWith('/node_modules'))) {
+    const allowedIPs = ['127.0.0.1', '::1', '::ffff:127.0.0.1'];
+    const clientIP = req.ip || req.connection.remoteAddress;
+
+    if (!allowedIPs.includes(clientIP)) {
+      return res.status(403).json({ message: 'Access Denied' });
+    }
+  }
+  next();
+});
+
+// Development-only security controls
+if (process.env.NODE_ENV === 'development') {
+  // Add whitelist for development tools
+  app.use((req, res, next) => {
+    const allowedDevPaths = [
+      '/node_modules',
+      '/@vite',
+      '/@fs',
+      '/@react-refresh'
+    ];
+
+    // Only allow dev tool access from localhost
+    if (allowedDevPaths.some(path => req.path.startsWith(path))) {
+      const ip = req.ip || req.connection.remoteAddress;
+      if (ip !== '127.0.0.1' && ip !== '::1' && ip !== '::ffff:127.0.0.1') {
+        return res.status(403).send('Access Denied');
+      }
+    }
+    next();
+  });
+}
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -47,7 +85,7 @@ app.use(cookieParser());
 
 // CSRF protection setup
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => process.env.SESSION_SECRET || "default-secret-key",
+  getSecret: () => process.env.SESSION_SECRET || randomBytes(32).toString('hex'), // Fallback for development
   cookieName: "x-csrf-token",
   cookieOptions: {
     httpOnly: true,
@@ -64,7 +102,7 @@ app.get('/api/csrf-token', (req, res) => {
   res.json({ csrfToken: generateToken(req, res) });
 });
 
-// Request logging middleware
+// Request logging middleware with sensitive data redaction
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -103,9 +141,13 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // Setup error handling for unhandled routes
+  // For production, add a proper fallback route for the SPA
   app.use((_req: Request, res: Response) => {
-    res.status(404).json({ message: "Not Found" });
+    if (process.env.NODE_ENV === 'production') {
+      res.sendFile('index.html', { root: './dist/public' });
+    } else {
+      res.status(404).json({ message: "Not Found" });
+    }
   });
 
   if (app.get("env") === "development") {
