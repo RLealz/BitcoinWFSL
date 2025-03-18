@@ -10,12 +10,13 @@
   body, #root {
     @apply font-sans antialiased text-foreground min-h-screen;
     background: linear-gradient(135deg, #1a1a2e 0%, #4a1578 100%);
+    background-attachment: fixed;
   }
 }
 
 @layer utilities {
   .gradient-background {
-    background: linear-gradient(135deg, #1a1a2e 0%, #4a1578 100%);
+    background: transparent;
     @apply text-white relative z-10;
   }
 
@@ -41,18 +42,9 @@
   }
 }
 
-/* Smooth section transitions */
+/* Remove section transitions since we're using a fixed background */
 section {
   position: relative;
   overflow: hidden;
-}
-
-section::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  @apply relative z-10;
 }
