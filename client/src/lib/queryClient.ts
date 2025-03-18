@@ -29,7 +29,7 @@ export async function apiRequest(
   // Add CSRF token for non-GET requests
   if (method !== 'GET') {
     const csrfToken = await getCsrfToken();
-    headers['CSRF-Token'] = csrfToken;
+    headers['X-CSRF-Token'] = csrfToken; // Updated header name to match csrf-csrf
   }
 
   const res = await fetch(url, {

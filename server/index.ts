@@ -4,7 +4,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
-import csrf from "csurf";
+import { doubleCsrf } from "csrf-csrf";
 
 const app = express();
 
@@ -45,14 +45,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// CSRF protection
-const csrfProtection = csrf({ cookie: true });
+// CSRF protection setup
+const { generateToken, doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => process.env.SESSION_SECRET || "default-secret-key",
+  cookieName: "x-csrf-token",
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  },
+});
+
 // Apply CSRF protection to all POST endpoints
-app.use('/api', csrfProtection);
+app.use('/api', doubleCsrfProtection);
 
 // Provide CSRF token to client
-app.get('/api/csrf-token', csrfProtection, (req, res) => {
-  res.json({ csrfToken: req.csrfToken() });
+app.get('/api/csrf-token', (req, res) => {
+  res.json({ csrfToken: generateToken(req, res) });
 });
 
 // Request logging middleware
