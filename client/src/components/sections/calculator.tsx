@@ -37,10 +37,14 @@ export default function Calculator() {
     else return { min: investment, max: investment };
 
     // Calculate compound interest for min and max returns
-    // Using the formula: P * (1 + r)^t
-    // where P is principal, r is monthly rate, t is number of months
-    const minTotal = investment * Math.pow(1 + tier.minReturn, duration);
-    const maxTotal = investment * Math.pow(1 + tier.maxReturn, duration);
+    let minTotal = investment;
+    let maxTotal = investment;
+
+    // Compound monthly
+    for (let i = 0; i < duration; i++) {
+      minTotal += minTotal * tier.minReturn;
+      maxTotal += maxTotal * tier.maxReturn;
+    }
 
     return {
       min: minTotal,
