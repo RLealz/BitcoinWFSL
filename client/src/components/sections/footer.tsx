@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin } from "lucide-react";
+import { SiWhatsapp, SiTelegram } from "react-icons/si";
 
 export default function Footer() {
   return (
@@ -33,17 +34,30 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Copyright */}
+          {/* Quick Contact */}
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-[#FFD700]">Legal</h3>
-            <div className="space-y-2">
-              <p className="text-white/80">
-                © {new Date().getFullYear()} Bitcoin WFSL. Todos os direitos reservados.
-              </p>
-              <p className="text-white/60 text-sm">
-                * Os retornos apresentados são estimativas e podem variar de acordo com as condições do mercado.
-              </p>
+            <h3 className="text-xl font-semibold mb-4 text-[#FFD700]">Entre em contato já</h3>
+            <div className="flex gap-4">
+              <a
+                href="https://wa.me/351913207651"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-[#FFD700] transition-colors"
+              >
+                <SiWhatsapp className="h-8 w-8" />
+              </a>
+              <a
+                href="https://t.me/+351913207651"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-[#FFD700] transition-colors"
+              >
+                <SiTelegram className="h-8 w-8" />
+              </a>
             </div>
+            <p className="text-white/60 text-sm mt-4">
+              © {new Date().getFullYear()} Bitcoin WFSL. Todos os direitos reservados.
+            </p>
           </div>
         </div>
       </div>
