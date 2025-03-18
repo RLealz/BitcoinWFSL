@@ -55,6 +55,12 @@ export default function Header() {
               Planos
             </button>
             <button
+              onClick={() => handleScroll("equipa")}
+              className="text-white hover:text-[#FFD700] transition-colors"
+            >
+              Equipa
+            </button>
+            <button
               onClick={() => handleScroll("contact")}
               className="text-white hover:text-[#FFD700] transition-colors"
             >

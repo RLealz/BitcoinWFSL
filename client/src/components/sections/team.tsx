@@ -18,7 +18,7 @@ const team = [
 
 export default function Team() {
   return (
-    <section className="py-24 gradient-background">
+    <section id="equipa" className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 text-[#FFD700]">A Nossa Equipa</h2>
