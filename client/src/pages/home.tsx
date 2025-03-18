@@ -11,8 +11,8 @@ export default function Home() {
       <Hero />
       <Features />
       <Benefits />
-      <CTA />
       <Team />
+      <CTA />
       <Contact />
     </div>
   );
