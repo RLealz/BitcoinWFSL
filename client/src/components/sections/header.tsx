@@ -49,7 +49,7 @@ export default function Header() {
               Serviços
             </button>
             <button
-              onClick={() => handleScroll("benefits")}
+              onClick={() => handleScroll("planos")}
               className="text-white hover:text-[#FFD700] transition-colors"
             >
               Planos
