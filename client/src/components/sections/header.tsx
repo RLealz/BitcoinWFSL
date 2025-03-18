@@ -14,54 +14,15 @@ export default function Header() {
   };
 
   useEffect(() => {
-    let ws: WebSocket | null = null;
-    try {
-      ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
 
-      ws.onopen = () => {
-        console.log('Price WebSocket Connected');
-      };
-
-      ws.onerror = (error) => {
-        console.error('Price WebSocket Error:', error);
-      };
-
-      ws.onclose = () => {
-        console.log('Price WebSocket Closed');
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (!data || !data.c) {
-            console.warn('Invalid price data received');
-            return;
-          }
-
-          const usdPrice = parseFloat(data.c);
-          if (isNaN(usdPrice)) {
-            console.warn('Invalid price value received');
-            return;
-          }
-
-          setPrice(usdPrice);
-          if (data.P) {
-            setPriceChange(parseFloat(data.P));
-          }
-        } catch (error) {
-          console.error('Error processing price data:', error);
-        }
-      };
-    } catch (error) {
-      console.error('Error setting up price tracker:', error);
-      if (ws) ws.close();
-    }
-
-    return () => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.close();
-      }
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setPrice(parseFloat(data.c));
+      setPriceChange(parseFloat(data.P));
     };
+
+    return () => ws.close();
   }, []);
 
   return (
@@ -107,7 +68,7 @@ export default function Header() {
             {price !== null && (
               <div className="flex items-center space-x-2">
                 <span className="text-[#FFD700] font-semibold">
-                  ${price.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                  ${price.toLocaleString()}
                 </span>
                 <span className={`text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {priceChange > 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
