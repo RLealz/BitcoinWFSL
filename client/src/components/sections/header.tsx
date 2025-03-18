@@ -2,52 +2,13 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { Bitcoin } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function Header() {
   const { user } = useAuth();
-  const [price, setPrice] = useState<number | null>(null);
-  const [priceChange, setPriceChange] = useState<number>(0);
 
   const handleScroll = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
-
-  useEffect(() => {
-    console.log("Setting up WebSocket connection");
-    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
-
-    ws.onopen = () => {
-      console.log("WebSocket connection opened");
-    };
-
-    ws.onmessage = (event) => {
-      console.log("Received WebSocket message:", event.data);
-      try {
-        const data = JSON.parse(event.data);
-        if (data && data.c) {
-          console.log("Setting new price:", data.c);
-          setPrice(parseFloat(data.c));
-          setPriceChange(parseFloat(data.P));
-        }
-      } catch (error) {
-        console.error("Error processing WebSocket message:", error);
-      }
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-
-    return () => {
-      console.log("Cleaning up WebSocket connection");
-      ws.close();
-    };
-  }, []);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-sm border-b border-white/10">
@@ -87,21 +48,8 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Price Display and Auth */}
-          <div className="flex items-center space-x-4">
-            <div className="price-display text-[#FFD700] font-semibold">
-              {price ? (
-                <>
-                  <span>${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                  <span className={`ml-2 text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {priceChange >= 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
-                  </span>
-                </>
-              ) : (
-                <span>--</span>
-              )}
-            </div>
-
+          {/* Auth Button */}
+          <div>
             {user ? (
               <Link href="/admin">
                 <Button variant="outline" className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black">

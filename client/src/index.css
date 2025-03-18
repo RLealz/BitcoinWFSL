@@ -42,15 +42,6 @@
   }
 }
 
-/* Header styles */
-header {
-  @apply backdrop-blur-sm;
-}
-
-header .price-display {
-  @apply visible relative z-50;
-}
-
 /* Remove section transitions since we're using a fixed background */
 section {
   position: relative;
