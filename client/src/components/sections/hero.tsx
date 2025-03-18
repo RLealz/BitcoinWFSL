@@ -26,29 +26,19 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-3xl"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-              <span className="text-gradient">BITCOIN WFSL</span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[#FFD700]">
+              BITCOIN WFSL
             </h1>
             <p className="text-lg sm:text-xl text-white mb-8">
               Faça Crescer a Sua Riqueza com Investimentos em Criptomoedas
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                onClick={() => handleScroll("contact")}
-                className="bg-primary hover:bg-primary/90 text-white"
-              >
-                Comece a Investir
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => handleScroll("features")}
-                className="border-primary text-primary hover:bg-primary/10"
-              >
-                Saiba Mais
-              </Button>
-            </div>
+            <Button
+              size="lg"
+              onClick={() => handleScroll("features")}
+              className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-semibold"
+            >
+              Comece a Investir
+            </Button>
           </motion.div>
         </div>
       </div>
