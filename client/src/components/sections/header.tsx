@@ -71,11 +71,11 @@ export default function Header() {
 
           {/* Price and Auth Buttons */}
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+            <div className="price-display flex items-center space-x-2">
               <span className="text-[#FFD700] font-semibold">
-                {price !== null ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '--'}
+                {price ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '--'}
               </span>
-              {price !== null && (
+              {price && (
                 <span className={`text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {priceChange >= 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
                 </span>
