@@ -17,7 +17,7 @@ export default function Hero() {
             transition={{ duration: 1 }}
             className="mb-6"
           >
-            <Bitcoin className="w-32 h-32 sm:w-40 sm:h-40 text-[#F7931A] animate-pulse" />
+            <Bitcoin className="w-32 h-32 sm:w-40 sm:h-40 text-[#FFD700] animate-pulse" />
           </motion.div>
 
           <motion.div
@@ -26,10 +26,10 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-3xl"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
-              BITCOIN WFSL
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
+              <span className="text-gradient">BITCOIN WFSL</span>
             </h1>
-            <p className="text-lg sm:text-xl text-white/80 mb-8">
+            <p className="text-lg sm:text-xl text-white mb-8">
               Faça Crescer a Sua Riqueza com Investimentos em Criptomoedas
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
