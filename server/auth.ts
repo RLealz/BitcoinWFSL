@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Express } from "express";
+import { Express, Request } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
@@ -94,9 +94,9 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/register", async (req, res, next) => {
+  app.post("/api/register", async (req: Request, res, next) => {
     try {
-      const ip = req.ip;
+      const ip = req.ip || req.socket.remoteAddress || 'unknown';
       if (!checkRateLimit(ip)) {
         return res.status(429).json({ message: "Too many attempts. Please try again later." });
       }
@@ -120,13 +120,13 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/login", (req, res, next) => {
-    const ip = req.ip;
+  app.post("/api/login", (req: Request, res, next) => {
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
     if (!checkRateLimit(ip)) {
       return res.status(429).json({ message: "Too many attempts. Please try again later." });
     }
 
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err: Error | null, user: SelectUser | false, info: { message: string } | undefined) => {
       if (err) return next(err);
       if (!user) {
         return res.status(401).json({ message: info?.message || "Invalid credentials" });
