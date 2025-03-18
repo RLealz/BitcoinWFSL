@@ -17,72 +17,106 @@ export default function CryptoTracker() {
   const [priceChange, setPriceChange] = useState<number>(0);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  useEffect(() => {
+useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    const chart = createChart(chartContainerRef.current, {
-      width: chartContainerRef.current.clientWidth,
-      height: 300,
-      layout: {
-        background: { color: 'transparent' },
-        textColor: '#d1d5db',
-      },
-      grid: {
-        vertLines: { color: 'rgba(255, 255, 255, 0.1)' },
-        horzLines: { color: 'rgba(255, 255, 255, 0.1)' },
-      },
-    });
+    let ws: WebSocket | null = null;
+    try {
+      const chart = createChart(chartContainerRef.current, {
+        width: chartContainerRef.current.clientWidth,
+        height: 300,
+        layout: {
+          background: { color: 'transparent' },
+          textColor: '#d1d5db',
+        },
+        grid: {
+          vertLines: { color: 'rgba(255, 255, 255, 0.1)' },
+          horzLines: { color: 'rgba(255, 255, 255, 0.1)' },
+        },
+      });
 
-    const candlestickSeries = chart.addCandlestickSeries({
-      upColor: '#22c55e',
-      downColor: '#ef4444',
-      borderVisible: false,
-      wickUpColor: '#22c55e',
-      wickDownColor: '#ef4444',
-    });
+      const candlestickSeries = chart.addCandlestickSeries({
+        upColor: '#22c55e',
+        downColor: '#ef4444',
+        borderVisible: false,
+        wickUpColor: '#22c55e',
+        wickDownColor: '#ef4444',
+      });
 
-    // Connect to Binance WebSocket for real-time price updates
-    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
+      // Connect to Binance WebSocket for real-time price updates
+      ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      const candlestick = data.k;
-
-      const newPrice = parseFloat(candlestick.c);
-      if (price !== null) {
-        setPriceChange(((newPrice - price) / price) * 100);
-      }
-      setPrice(newPrice);
-      setLastUpdate(new Date());
-
-      const candleData: CandlestickData = {
-        time: (candlestick.t / 1000) as Time,
-        open: parseFloat(candlestick.o),
-        high: parseFloat(candlestick.h),
-        low: parseFloat(candlestick.l),
-        close: parseFloat(candlestick.c),
+      ws.onopen = () => {
+        console.log('WebSocket Connected');
       };
 
-      candlestickSeries.update(candleData);
-    };
+      ws.onerror = (error) => {
+        console.error('WebSocket Error:', error);
+      };
 
-    // Handle window resize
-    const handleResize = () => {
-      if (chartContainerRef.current) {
-        chart.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-        });
-      }
-    };
+      ws.onclose = () => {
+        console.log('WebSocket Closed');
+      };
 
-    window.addEventListener('resize', handleResize);
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          const candlestick = data.k;
 
-    // Cleanup
-    return () => {
-      chart.remove();
-      ws.close();
-      window.removeEventListener('resize', handleResize);
-    };
+          if (!candlestick) {
+            console.warn('Invalid candlestick data received');
+            return;
+          }
+
+          const newPrice = parseFloat(candlestick.c);
+          if (isNaN(newPrice)) {
+            console.warn('Invalid price received');
+            return;
+          }
+
+          if (price !== null) {
+            setPriceChange(((newPrice - price) / price) * 100);
+          }
+          setPrice(newPrice);
+          setLastUpdate(new Date());
+
+          const candleData: CandlestickData = {
+            time: (candlestick.t / 1000) as Time,
+            open: parseFloat(candlestick.o),
+            high: parseFloat(candlestick.h),
+            low: parseFloat(candlestick.l),
+            close: parseFloat(candlestick.c),
+          };
+
+          candlestickSeries.update(candleData);
+        } catch (error) {
+          console.error('Error processing WebSocket message:', error);
+        }
+      };
+
+      // Handle window resize
+      const handleResize = () => {
+        if (chartContainerRef.current) {
+          chart.applyOptions({
+            width: chartContainerRef.current.clientWidth,
+          });
+        }
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      // Cleanup
+      return () => {
+        chart.remove();
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        }
+        window.removeEventListener('resize', handleResize);
+      };
+    } catch (error) {
+      console.error('Error setting up crypto tracker:', error);
+      if (ws) ws.close();
+    }
   }, []);
 
   return (
