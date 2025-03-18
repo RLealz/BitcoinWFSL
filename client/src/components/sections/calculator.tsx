@@ -13,10 +13,10 @@ import {
 
 // Investment tiers and their monthly return rates
 const INVESTMENT_TIERS = {
-  BRONZE: { min: 1000, maxReturn: 0.18 }, // 18% max monthly return
-  SILVER: { min: 2500, maxReturn: 0.14 }, // 14% max monthly return
-  GOLD: { min: 5000, maxReturn: 0.15 }, // 15% max monthly return
-  DIAMOND: { min: 10000, maxReturn: 0.15 }, // 15% max monthly return
+  BRONZE: { min: 1000, minReturn: 0.10, maxReturn: 0.18 }, // 10-18% monthly return
+  SILVER: { min: 2500, minReturn: 0.10, maxReturn: 0.14 }, // 10-14% monthly return
+  GOLD: { min: 5000, minReturn: 0.10, maxReturn: 0.15 }, // 10-15% monthly return
+  DIAMOND: { min: 10000, minReturn: 0.10, maxReturn: 0.15 }, // 10-15% monthly return
 };
 
 export default function Calculator() {
@@ -37,12 +37,9 @@ export default function Calculator() {
     else return { min: investment, max: investment };
 
     // Calculate min and max returns
-    const maxMonthlyReturn = tier.maxReturn;
-    const minMonthlyReturn = maxMonthlyReturn * 0.6; // 60% of max return as minimum
-
     // Compound interest calculation including initial investment
-    const minTotal = investment * Math.pow(1 + minMonthlyReturn, duration);
-    const maxTotal = investment * Math.pow(1 + maxMonthlyReturn, duration);
+    const minTotal = investment * Math.pow(1 + tier.minReturn, duration);
+    const maxTotal = investment * Math.pow(1 + tier.maxReturn, duration);
 
     return {
       min: minTotal,
@@ -103,7 +100,7 @@ export default function Calculator() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="p-4 rounded-lg bg-black/30 border border-white/10">
                     <p className="text-sm text-white/80 mb-2">Retorno Mínimo Total</p>
-                    <p className="text-2xl font-bold text-primary">
+                    <p className="text-2xl font-bold text-white">
                       {returns.min.toLocaleString('pt-PT', {
                         style: 'currency',
                         currency: 'EUR'
@@ -112,7 +109,7 @@ export default function Calculator() {
                   </div>
                   <div className="p-4 rounded-lg bg-black/30 border border-white/10">
                     <p className="text-sm text-white/80 mb-2">Retorno Máximo Total</p>
-                    <p className="text-2xl font-bold text-primary">
+                    <p className="text-2xl font-bold text-white">
                       {returns.max.toLocaleString('pt-PT', {
                         style: 'currency',
                         currency: 'EUR'

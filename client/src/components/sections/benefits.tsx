@@ -25,10 +25,10 @@ export default function Benefits() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/10">
-                  <th className="px-6 py-4 text-left font-semibold text-primary">Nível</th>
-                  <th className="px-6 py-4 text-left font-semibold text-primary">Capital Inicial</th>
-                  <th className="px-6 py-4 text-left font-semibold text-primary">Retorno Mensal Mínimo</th>
-                  <th className="px-6 py-4 text-left font-semibold text-primary">Retorno Mensal Máximo</th>
+                  <th className="px-6 py-4 text-left font-semibold text-white">Nível</th>
+                  <th className="px-6 py-4 text-left font-semibold text-white">Capital Inicial</th>
+                  <th className="px-6 py-4 text-left font-semibold text-white">Retorno Mensal Mínimo</th>
+                  <th className="px-6 py-4 text-left font-semibold text-white">Retorno Mensal Máximo</th>
                 </tr>
               </thead>
               <tbody>
@@ -43,8 +43,8 @@ export default function Benefits() {
                   >
                     <td className="px-6 py-4 font-medium text-white">{plan.tier}</td>
                     <td className="px-6 py-4 text-white">{plan.initial}</td>
-                    <td className="px-6 py-4 text-primary">{plan.minReturn}</td>
-                    <td className="px-6 py-4 text-primary">{plan.maxReturn}</td>
+                    <td className="px-6 py-4 text-white">{plan.minReturn}</td>
+                    <td className="px-6 py-4 text-white">{plan.maxReturn}</td>
                   </motion.tr>
                 ))}
               </tbody>
