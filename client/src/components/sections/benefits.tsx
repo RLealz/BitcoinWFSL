@@ -18,7 +18,7 @@ export default function Benefits() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto"
         >
-          <h2 className="text-4xl font-bold mb-8 text-center text-gradient">
+          <h2 className="text-4xl font-bold mb-8 text-center text-white">
             Os Nossos Planos de Investimento
           </h2>
           <div className="overflow-x-auto rounded-lg border border-white/10 shadow-lg bg-black/20">
