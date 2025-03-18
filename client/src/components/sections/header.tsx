@@ -14,63 +14,21 @@ export default function Header() {
   };
 
   useEffect(() => {
-    // Create WebSocket connection
-    let ws: WebSocket | null = null;
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
 
-    const connectWebSocket = () => {
+    ws.onmessage = (event) => {
       try {
-        ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
-
-        ws.onopen = () => {
-          console.log('Connected to Binance WebSocket');
-        };
-
-        ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            console.log('Received data:', data);
-
-            if (data && data.c) {
-              const currentPrice = parseFloat(data.c);
-              const priceChangePercent = parseFloat(data.P);
-
-              if (!isNaN(currentPrice)) {
-                setPrice(currentPrice);
-              }
-              if (!isNaN(priceChangePercent)) {
-                setPriceChange(priceChangePercent);
-              }
-            }
-          } catch (error) {
-            console.error('Error processing message:', error);
-          }
-        };
-
-        ws.onerror = (error) => {
-          console.error('WebSocket error:', error);
-        };
-
-        ws.onclose = () => {
-          console.log('WebSocket connection closed');
-          // Try to reconnect
-          setTimeout(connectWebSocket, 5000);
-        };
+        const data = JSON.parse(event.data);
+        if (data && data.c) {
+          setPrice(parseFloat(data.c));
+          setPriceChange(parseFloat(data.P));
+        }
       } catch (error) {
-        console.error('Failed to connect:', error);
-        // Try to reconnect
-        setTimeout(connectWebSocket, 5000);
+        console.error('Error:', error);
       }
     };
 
-    // Initial connection
-    connectWebSocket();
-
-    // Cleanup on unmount
-    return () => {
-      if (ws) {
-        ws.close();
-      }
-    };
+    return () => ws.close();
   }, []);
 
   return (
@@ -113,16 +71,17 @@ export default function Header() {
 
           {/* Price and Auth Buttons */}
           <div className="flex items-center space-x-4">
-            {price !== null && (
-              <div className="flex items-center space-x-2">
-                <span className="text-[#FFD700] font-semibold">
-                  ${Number(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
+            <div className="flex items-center space-x-2">
+              <span className="text-[#FFD700] font-semibold">
+                {price !== null ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '--'}
+              </span>
+              {price !== null && (
                 <span className={`text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {priceChange >= 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
                 </span>
-              </div>
-            )}
+              )}
+            </div>
+
             {user ? (
               <Link href="/admin">
                 <Button variant="outline" className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black">
