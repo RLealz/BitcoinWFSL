@@ -5,7 +5,6 @@ import Calculator from "@/components/sections/calculator";
 import Team from "@/components/sections/team";
 import CTA from "@/components/sections/cta";
 import Contact from "@/components/sections/contact";
-import CryptoTracker from "@/components/sections/crypto-tracker";
 
 export default function Home() {
   return (
@@ -13,7 +12,6 @@ export default function Home() {
       <Hero />
       <Features />
       <Benefits />
-      <CryptoTracker />
       <Calculator />
       <Team />
       <CTA />

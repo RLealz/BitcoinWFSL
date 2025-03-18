@@ -2,13 +2,31 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { Bitcoin } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const { user } = useAuth();
+  const [price, setPrice] = useState<number | null>(null);
+  const [priceChange, setPriceChange] = useState<number>(0);
 
   const handleScroll = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const newPrice = parseFloat(data.c);
+      if (price !== null) {
+        setPriceChange(parseFloat(data.P));
+      }
+      setPrice(newPrice);
+    };
+
+    return () => ws.close();
+  }, []);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-sm border-b border-white/10">
@@ -48,8 +66,18 @@ export default function Header() {
             </button>
           </nav>
 
-          {/* Auth Buttons */}
+          {/* Price and Auth Buttons */}
           <div className="flex items-center space-x-4">
+            {price && (
+              <div className="flex items-center space-x-2">
+                <span className="text-[#FFD700] font-semibold">
+                  ${price.toLocaleString()}
+                </span>
+                <span className={`text-sm ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {priceChange > 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
+                </span>
+              </div>
+            )}
             {user ? (
               <Link href="/admin">
                 <Button variant="outline" className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black">
