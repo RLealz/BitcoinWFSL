@@ -26,10 +26,10 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-3xl"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6">
-              <span className="text-gradient">BITCOIN WFSL</span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
+              BITCOIN WFSL
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground mb-8">
+            <p className="text-lg sm:text-xl text-white/80 mb-8">
               Faça Crescer a Sua Riqueza com Investimentos em Criptomoedas
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
