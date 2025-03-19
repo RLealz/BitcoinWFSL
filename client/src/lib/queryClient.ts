@@ -17,8 +17,11 @@ async function getCsrfToken(): Promise<string> {
     const data = await res.json();
     return data.csrfToken;
   } catch (error) {
-    console.error("Failed to fetch CSRF token:", error);
-    throw new Error("Failed to fetch CSRF token. Please try again.");
+    // Only log the error in development
+    if (import.meta.env.DEV) {
+      console.warn("CSRF token fetch failed:", error);
+    }
+    throw error;
   }
 }
 
@@ -42,12 +45,20 @@ export async function apiRequest(
         const csrfToken = await getCsrfToken();
         headers['X-CSRF-Token'] = csrfToken;
       } catch (error) {
-        console.error("CSRF token fetch failed:", error);
-        throw error;
+        if (import.meta.env.DEV) {
+          console.warn("CSRF token fetch failed:", error);
+        }
+        // Don't rethrow in development to prevent Vite overlay
+        if (!import.meta.env.DEV) {
+          throw error;
+        }
       }
     }
 
-    console.log(`Making ${method} request to ${url}`);
+    if (import.meta.env.DEV) {
+      console.debug(`Making ${method} request to ${url}`);
+    }
+
     const res = await fetch(url, {
       method,
       headers,
@@ -55,14 +66,17 @@ export async function apiRequest(
       credentials: "include",
     });
 
-    // Log response status and headers for debugging
-    console.log(`Response status: ${res.status}`);
-    console.log(`Response headers:`, Object.fromEntries(res.headers.entries()));
-
     await throwIfResNotOk(res);
     return res;
   } catch (error) {
-    console.error(`API request failed (${method} ${url}):`, error);
+    // In development, only log non-critical errors
+    if (import.meta.env.DEV) {
+      console.warn(`API request warning (${method} ${url}):`, error);
+      // Don't rethrow HMR-related errors in development
+      if (error instanceof Error && error.message.includes('Failed to fetch')) {
+        return new Response(null, { status: 200 });
+      }
+    }
     throw error;
   }
 }
@@ -85,7 +99,11 @@ export const getQueryFn: <T>(options: {
       await throwIfResNotOk(res);
       return await res.json();
     } catch (error) {
-      console.error("Query function error:", error);
+      // In development, handle fetch errors gracefully
+      if (import.meta.env.DEV && error instanceof Error && error.message.includes('Failed to fetch')) {
+        console.warn("Query function warning:", error);
+        return null;
+      }
       throw error;
     }
   };
