@@ -196,7 +196,7 @@ export default function Contact() {
               <div className="flex justify-center mb-6">
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey=RECAPTCHA_SITE_KEY{import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
                   onChange={(token: string | null) => setCaptchaToken(token)}
                   theme="dark"
                 />
