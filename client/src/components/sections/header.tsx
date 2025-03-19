@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { Bitcoin } from "lucide-react";
+import { AccessibilityControls } from "@/components/ui/accessibility-controls";
 
 export default function Header() {
   const { user } = useAuth();
@@ -48,8 +49,9 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Auth Button */}
-          <div>
+          {/* Accessibility Controls and Auth Button */}
+          <div className="flex items-center space-x-4">
+            <AccessibilityControls />
             {user ? (
               <Link href="/admin">
                 <Button variant="outline" className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black">
