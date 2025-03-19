@@ -8,7 +8,9 @@ if (import.meta.env.DEV) {
 
   // Handle synchronous errors
   window.addEventListener('error', (e) => {
-    if (e.message.includes('Failed to fetch')) {
+    if (e.message.includes('Failed to fetch') || 
+        e.filename?.includes('recaptcha') || 
+        e.filename?.includes('gstatic')) {
       e.preventDefault();
       console.warn('Fetch error suppressed:', e.message);
     }
@@ -17,7 +19,9 @@ if (import.meta.env.DEV) {
   // Handle promise rejections
   window.addEventListener("unhandledrejection", (e) => {
     if (e.reason && typeof e.reason === "object" && e.reason.message && 
-        e.reason.message.includes("Failed to fetch")) {
+        (e.reason.message.includes("Failed to fetch") ||
+         e.reason.stack?.includes("recaptcha") ||
+         e.reason.stack?.includes("gstatic"))) {
       e.preventDefault();
       console.warn("Unhandled rejection suppressed:", e.reason.message);
     }
@@ -26,7 +30,9 @@ if (import.meta.env.DEV) {
   // Handle HMR errors
   if (import.meta.hot) {
     import.meta.hot.on("error", (err: any) => {
-      if (err?.message && err.message.includes("Failed to fetch")) {
+      if (err?.message && (err.message.includes("Failed to fetch") ||
+          err.stack?.includes("recaptcha") ||
+          err.stack?.includes("gstatic"))) {
         console.warn("Suppressed HMR error:", err.message);
         return; // Prevent further handling
       }
@@ -40,8 +46,11 @@ if (import.meta.env.DEV) {
         if (
           node instanceof HTMLElement &&
           (node.id === "vite-error-overlay" || 
-           node.classList.contains("runtime-error-overlay")) &&
-          node.innerText.includes("Failed to fetch")
+           node.classList.contains("runtime-error-overlay") ||
+           node.classList.contains("eruda-error-stack")) &&
+          (node.innerText.includes("Failed to fetch") ||
+           node.innerText.includes("recaptcha") ||
+           node.innerText.includes("gstatic"))
         ) {
           console.warn("Removing error overlay node");
           node.remove();
