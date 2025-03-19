@@ -12,6 +12,7 @@ export function ProtectedRoute({
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
 
+  // Show loading state while checking authentication
   if (isLoading) {
     return (
       <Route path={path}>
@@ -22,8 +23,15 @@ export function ProtectedRoute({
     );
   }
 
+  // Redirect to auth page if not authenticated
   if (!user) {
-    setLocation("/auth");
+    // In development, don't trigger immediate redirects to prevent unnecessary error overlays
+    if (import.meta.env.DEV) {
+      console.debug("User not authenticated, redirecting to /auth");
+      setTimeout(() => setLocation("/auth"), 100);
+    } else {
+      setLocation("/auth");
+    }
     return null;
   }
 
