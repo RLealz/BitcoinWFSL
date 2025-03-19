@@ -15,37 +15,46 @@ const team = [
   {
     name: "João Gomes",
     role: "Founder & CEO",
-    description: "Visionário surdo em blockchain e finanças descentralizadas, com uma paixão por inovação tecnológica e inclusão. Também CEO da Bitcoin da Federação Mundial das Línguas.",
+    description:
+      "Visionário surdo em blockchain e finanças descentralizadas, com uma paixão por inovação tecnológica e inclusão. Também CEO da Bitcoin da Federação Mundial das Línguas.",
     image: "/team/joao-gomes.jpg",
-    longDescription: `Com mais de 10 anos de experiência em mercados financeiros e tecnologia blockchain, João é um pioneiro no desenvolvimento de soluções financeiras inclusivas para a comunidade surda.
-
-    Sua visão única combina expertise técnica com um profundo entendimento das necessidades específicas da comunidade surda no setor financeiro.`,
-    expertise: ["Blockchain", "DeFi", "Gestão de Investimentos", "Inclusão Financeira"],
-    languages: ["Língua Gestual Portuguesa", "Gesto Internacional", "ASL"],
-    education: "Mestrado em Finanças - Universidade de Lisboa",
+    longDescription: `Com mais de 20 anos de experiência em Proteção Civil e Community Building, João é um pioneiro no desenvolvimento de soluções inclusivas para a comunidade surda.`,
+    expertise: [
+      "Soluções Acessiveis",
+      "Inclusão Politica",
+      "Gestão de Investimentos",
+      "Inclusão Financeira",
+    ],
+    languages: ["Língua Gestual Portuguesa", "Gesto Internacional"],
     social: {
       linkedin: "https://linkedin.com/in/joao-gomes",
       email: "joao@bitcoinwfsl.com",
-      website: "https://joaogomes.com"
-    }
+      website: "https://joaogomes.com",
+    },
   },
   {
     name: "D4rk0s",
     role: "CTO & Co-Founder",
-    description: "Especialista em segurança blockchain e desenvolvimento de sistemas distribuídos.",
+    description:
+      "Especialista em segurança blockchain e desenvolvimento de sistemas distribuídos.",
     image: "/team/d4rk0s.jpg",
     longDescription: `Líder técnico com vasta experiência em segurança blockchain e sistemas distribuídos. D4rk0s tem sido fundamental no desenvolvimento da infraestrutura técnica segura e escalável da plataforma.
 
-    Sua experiência abrange desde a implementação de contratos inteligentes até o desenvolvimento de sistemas de trading automatizados.`,
-    expertise: ["Segurança Blockchain", "Smart Contracts", "Sistemas Distribuídos", "Criptografia"],
+    A sua experiência abrange desde a implementação de contratos inteligentes até o desenvolvimento de sistemas de trading automatizados.`,
+    expertise: [
+      "Segurança Blockchain",
+      "Smart Contracts",
+      "Sistemas Distribuídos",
+      "Linux",
+    ],
     languages: ["Português", "Inglês", "Python", "Solidity"],
-    education: "PhD em Ciência da Computação - Instituto Superior Técnico",
+    education: "PhD em Ciência da Computação $HOME",
     social: {
       linkedin: "https://linkedin.com/in/d4rk0s",
       email: "d4rk0s@bitcoinwfsl.com",
-      website: "https://d4rk0s.dev"
-    }
-  }
+      website: "https://d4rk0s.dev",
+    },
+  },
 ];
 
 export default function Team() {
@@ -53,7 +62,9 @@ export default function Team() {
     <section id="equipa" className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-[#FFD700]">A Nossa Equipa</h2>
+          <h2 className="text-4xl font-bold mb-4 text-[#FFD700]">
+            A Nossa Equipa
+          </h2>
         </div>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {team.map((member, index) => (
@@ -76,7 +87,9 @@ export default function Team() {
                       <h3 className="text-xl font-semibold text-center mb-2 text-white">
                         {member.name}
                       </h3>
-                      <p className="text-primary text-center mb-4">{member.role}</p>
+                      <p className="text-primary text-center mb-4">
+                        {member.role}
+                      </p>
                       <p className="text-white/80 text-center line-clamp-3">
                         {member.description}
                       </p>
@@ -104,7 +117,9 @@ export default function Team() {
                       </div>
 
                       <div>
-                        <h4 className="text-[#FFD700] font-semibold mb-2">Áreas de Expertise</h4>
+                        <h4 className="text-[#FFD700] font-semibold mb-2">
+                          Áreas de Expertise
+                        </h4>
                         <div className="flex flex-wrap gap-2">
                           {member.expertise.map((skill, i) => (
                             <span
@@ -118,7 +133,9 @@ export default function Team() {
                       </div>
 
                       <div>
-                        <h4 className="text-[#FFD700] font-semibold mb-2">Idiomas & Tecnologias</h4>
+                        <h4 className="text-[#FFD700] font-semibold mb-2">
+                          Idiomas & Tecnologias
+                        </h4>
                         <div className="flex flex-wrap gap-2">
                           {member.languages.map((lang, i) => (
                             <span
@@ -132,7 +149,9 @@ export default function Team() {
                       </div>
 
                       <div>
-                        <h4 className="text-[#FFD700] font-semibold mb-2">Formação</h4>
+                        <h4 className="text-[#FFD700] font-semibold mb-2">
+                          Formação
+                        </h4>
                         <p className="text-white/90">{member.education}</p>
                       </div>
 
