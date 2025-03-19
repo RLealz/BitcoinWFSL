@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import ReCAPTCHA from "react-google-recaptcha";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -43,6 +43,7 @@ export default function Contact() {
     },
   });
 
+  // Reset reCAPTCHA state
   const resetCaptcha = useCallback(() => {
     if (recaptchaRef.current) {
       recaptchaRef.current.reset();
@@ -50,24 +51,22 @@ export default function Contact() {
     }
   }, []);
 
+  // Handle form submission
   const mutation = useMutation({
     mutationFn: async (data: InsertLead) => {
       if (!captchaToken) {
         throw new Error("Por favor, complete o captcha");
       }
 
+      setIsSubmitting(true);
       try {
-        setIsSubmitting(true);
         const response = await apiRequest("POST", "/api/leads", {
           ...data,
           captchaToken,
         });
-
         return response.json();
       } finally {
         setIsSubmitting(false);
-        // Clear captcha after submission regardless of result
-        resetCaptcha();
       }
     },
     onSuccess: () => {
@@ -76,6 +75,7 @@ export default function Contact() {
         description: "Obrigado pelo seu interesse. Entraremos em contato em breve!",
       });
       form.reset();
+      resetCaptcha();
     },
     onError: (error) => {
       toast({
@@ -83,6 +83,7 @@ export default function Contact() {
         description: error instanceof Error ? error.message : "Algo deu errado. Por favor, tente novamente.",
         variant: "destructive",
       });
+      resetCaptcha();
     },
   });
 
@@ -99,17 +100,25 @@ export default function Contact() {
     try {
       await mutation.mutateAsync(data);
     } catch (error) {
-      // Error is handled by mutation's onError
       console.error("Submit error:", error);
     }
   };
 
-  const handleCaptchaChange = (token: string | null) => {
+  // Handle reCAPTCHA state changes
+  const handleCaptchaChange = useCallback((token: string | null) => {
     if (!token) {
       resetCaptcha();
+      return;
     }
     setCaptchaToken(token);
-  };
+  }, [resetCaptcha]);
+
+  // Clean up reCAPTCHA on component unmount
+  useEffect(() => {
+    return () => {
+      resetCaptcha();
+    };
+  }, [resetCaptcha]);
 
   return (
     <section id="contact" className="py-24 gradient-background">
@@ -226,12 +235,8 @@ export default function Contact() {
                   ref={recaptchaRef}
                   sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
                   onChange={handleCaptchaChange}
-                  onExpired={() => {
-                    console.log("reCAPTCHA expired");
-                    resetCaptcha();
-                  }}
+                  onExpired={resetCaptcha}
                   onError={() => {
-                    console.error("reCAPTCHA error");
                     resetCaptcha();
                     toast({
                       title: "Erro",
