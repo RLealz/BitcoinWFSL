@@ -30,6 +30,7 @@ export default function Contact() {
   const { toast } = useToast();
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<InsertLead>({
     resolver: zodResolver(insertLeadSchema),
@@ -48,16 +49,24 @@ export default function Contact() {
         throw new Error("Por favor, complete o captcha");
       }
 
-      console.log("Submitting form data:", { ...data, captchaToken: "HIDDEN" });
+      try {
+        setIsSubmitting(true);
+        console.log("Submitting form with reCAPTCHA token");
 
-      const res = await apiRequest("POST", "/api/leads", {
-        ...data,
-        captchaToken
-      });
+        const res = await apiRequest("POST", "/api/leads", {
+          ...data,
+          captchaToken
+        });
 
-      const result = await res.json();
-      console.log("Form submission response:", result);
-      return result;
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Erro ao enviar formulário");
+        }
+
+        return await res.json();
+      } finally {
+        setIsSubmitting(false);
+      }
     },
     onSuccess: () => {
       console.log("Form submitted successfully");
@@ -76,10 +85,21 @@ export default function Contact() {
         description: error instanceof Error ? error.message : "Algo deu errado. Por favor, tente novamente.",
         variant: "destructive",
       });
+      // Reset reCAPTCHA on error
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
     },
   });
 
   const onSubmit = (data: InsertLead) => {
+    if (!captchaToken) {
+      toast({
+        title: "Erro",
+        description: "Por favor, complete o captcha antes de enviar.",
+        variant: "destructive",
+      });
+      return;
+    }
     mutation.mutate(data);
   };
 
@@ -135,10 +155,10 @@ export default function Contact() {
                   <FormItem>
                     <FormLabel className="text-white">Telefone (Opcional)</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Seu número de telefone" 
-                        value={value ?? ''} 
-                        {...fieldProps} 
+                      <Input
+                        placeholder="Seu número de telefone"
+                        value={value ?? ''}
+                        {...fieldProps}
                         className="bg-black/20 border-white/10 text-white placeholder:text-white/50"
                       />
                     </FormControl>
@@ -197,7 +217,23 @@ export default function Contact() {
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                  onChange={(token: string | null) => setCaptchaToken(token)}
+                  onChange={(token: string | null) => {
+                    console.log("reCAPTCHA token received:", token ? "valid token" : "no token");
+                    setCaptchaToken(token);
+                  }}
+                  onExpired={() => {
+                    console.log("reCAPTCHA expired");
+                    setCaptchaToken(null);
+                  }}
+                  onError={() => {
+                    console.error("reCAPTCHA error");
+                    setCaptchaToken(null);
+                    toast({
+                      title: "Erro",
+                      description: "Erro ao carregar o captcha. Por favor, recarregue a página.",
+                      variant: "destructive",
+                    });
+                  }}
                   theme="dark"
                 />
               </div>
@@ -205,9 +241,9 @@ export default function Contact() {
               <Button
                 type="submit"
                 className="w-full bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-semibold"
-                disabled={mutation.isPending || !captchaToken}
+                disabled={mutation.isPending || !captchaToken || isSubmitting}
               >
-                {mutation.isPending ? "Enviando..." : "Enviar Mensagem"}
+                {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
               </Button>
             </form>
           </Form>

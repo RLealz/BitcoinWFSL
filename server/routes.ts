@@ -41,10 +41,12 @@ interface RecaptchaResponse {
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
   if (!recaptchaSecret) {
-    throw new ApiError("Missing RECAPTCHA_SECRET_KEY", 500, "MISSING_CONFIG");
+    console.error("Missing RECAPTCHA_SECRET_KEY environment variable");
+    throw new ApiError("reCAPTCHA configuration error", 500, "RECAPTCHA_CONFIG_ERROR");
   }
 
   try {
+    console.log("Verifying reCAPTCHA token...");
     const verificationUrl = "https://www.google.com/recaptcha/api/siteverify";
     const response = await fetch(verificationUrl, {
       method: "POST",
@@ -55,18 +57,25 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
     });
 
     const data = await response.json() as RecaptchaResponse;
+    console.log("reCAPTCHA verification response:", {
+      success: data.success,
+      hostname: data.hostname,
+      errorCodes: data["error-codes"]
+    });
 
-    if (!data.success && data["error-codes"]?.length) {
+    if (!data.success) {
+      console.error("reCAPTCHA verification failed:", data["error-codes"]);
       throw new ApiError(
         "reCAPTCHA verification failed",
         400,
-        "RECAPTCHA_ERROR",
+        "RECAPTCHA_VERIFICATION_FAILED",
         data["error-codes"]
       );
     }
 
     return data.success;
   } catch (error) {
+    console.error("reCAPTCHA verification error:", error);
     if (error instanceof ApiError) throw error;
     throw new ApiError("Failed to verify reCAPTCHA", 500, "RECAPTCHA_ERROR");
   }
