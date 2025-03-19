@@ -22,17 +22,16 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "https://www.google.com/recaptcha/", "https://www.google.com/recaptcha/api/", "https://www.gstatic.com/recaptcha/"],
+      connectSrc: ["'self'", "https://www.google.com/recaptcha/", "https://www.google.com/recaptcha/api/", "https://www.gstatic.com/recaptcha/", "ws:", "wss:"],
       frameSrc: ["'self'", "https://www.google.com/recaptcha/"],
       workerSrc: ["'self'", "blob:"],
       childSrc: ["'self'", "blob:"],
-      formAction: ["'self'"],
-      upgradeInsecureRequests: [],
+      formAction: ["'self'", "https://www.google.com/recaptcha/"],
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
     },
   },
   crossOriginEmbedderPolicy: false,
   crossOriginResourcePolicy: { policy: "cross-origin" },
-  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
 }));
 
 // Additional security headers
@@ -46,7 +45,7 @@ app.use((req, res, next) => {
 // API rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100
+  max: 100,
 });
 app.use("/api/", limiter);
 
