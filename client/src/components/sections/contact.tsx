@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import ReCAPTCHA from "react-google-recaptcha";
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import {
   Form,
   FormControl,
@@ -43,6 +43,11 @@ export default function Contact() {
     },
   });
 
+  const resetCaptcha = useCallback(() => {
+    recaptchaRef.current?.reset();
+    setCaptchaToken(null);
+  }, []);
+
   const mutation = useMutation({
     mutationFn: async (data: InsertLead) => {
       if (!captchaToken) {
@@ -51,24 +56,22 @@ export default function Contact() {
 
       try {
         setIsSubmitting(true);
-        console.log("Submitting form with data:", { ...data, captchaToken: 'token-hidden' });
+        console.log("Submitting form with data:", {
+          ...data,
+          captchaToken: `${captchaToken.substring(0, 10)}...`,
+        });
 
         const response = await apiRequest("POST", "/api/leads", {
           ...data,
           captchaToken,
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Form submission error:", errorData);
-          throw new Error(errorData.message || "Erro ao enviar formulário");
-        }
-
         const result = await response.json();
         console.log("Form submission successful:", result);
         return result;
       } catch (error) {
         console.error("Form submission failed:", error);
+        resetCaptcha();
         throw error;
       } finally {
         setIsSubmitting(false);
@@ -80,8 +83,7 @@ export default function Contact() {
         description: "Obrigado pelo seu interesse. Entraremos em contato em breve!",
       });
       form.reset();
-      setCaptchaToken(null);
-      recaptchaRef.current?.reset();
+      resetCaptcha();
     },
     onError: (error) => {
       console.error("Mutation error:", error);
@@ -90,8 +92,7 @@ export default function Contact() {
         description: error instanceof Error ? error.message : "Algo deu errado. Por favor, tente novamente.",
         variant: "destructive",
       });
-      recaptchaRef.current?.reset();
-      setCaptchaToken(null);
+      resetCaptcha();
     },
   });
 
@@ -109,6 +110,11 @@ export default function Contact() {
     } catch (error) {
       console.error("Submit error:", error);
     }
+  };
+
+  const handleCaptchaChange = (token: string | null) => {
+    console.log("reCAPTCHA token received:", token ? "valid token" : "no token");
+    setCaptchaToken(token);
   };
 
   return (
@@ -225,10 +231,7 @@ export default function Contact() {
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                  onChange={(token: string | null) => {
-                    console.log("reCAPTCHA token received:", token ? "valid token" : "no token");
-                    setCaptchaToken(token);
-                  }}
+                  onChange={handleCaptchaChange}
                   onExpired={() => {
                     console.log("reCAPTCHA expired");
                     setCaptchaToken(null);

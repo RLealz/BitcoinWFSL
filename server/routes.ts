@@ -46,15 +46,25 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
   }
 
   try {
-    console.log("Verifying reCAPTCHA token...");
+    console.log("Verifying reCAPTCHA token...", { tokenLength: token?.length });
     const verificationUrl = "https://www.google.com/recaptcha/api/siteverify";
+    const params = new URLSearchParams({
+      secret: recaptchaSecret,
+      response: token
+    });
+
     const response = await fetch(verificationUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: `secret=${recaptchaSecret}&response=${token}`,
+      body: params.toString(),
     });
+
+    if (!response.ok) {
+      console.error("reCAPTCHA API error:", response.status, await response.text());
+      throw new ApiError("reCAPTCHA verification API error", 500, "RECAPTCHA_API_ERROR");
+    }
 
     const data = await response.json() as RecaptchaResponse;
     console.log("reCAPTCHA verification response:", {
