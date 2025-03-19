@@ -22,6 +22,35 @@ if (import.meta.env.DEV) {
       console.warn("Unhandled rejection suppressed:", e.reason.message);
     }
   });
+
+  // Handle HMR errors
+  if (import.meta.hot) {
+    import.meta.hot.on("error", (err: any) => {
+      if (err?.message && err.message.includes("Failed to fetch")) {
+        console.warn("Suppressed HMR error:", err.message);
+        return; // Prevent further handling
+      }
+    });
+  }
+
+  // Add DOM mutation observer to remove error overlays
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (
+          node instanceof HTMLElement &&
+          (node.id === "vite-error-overlay" || 
+           node.classList.contains("runtime-error-overlay")) &&
+          node.innerText.includes("Failed to fetch")
+        ) {
+          console.warn("Removing error overlay node");
+          node.remove();
+        }
+      });
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
 }
 
 createRoot(document.getElementById("root")!).render(<App />);
