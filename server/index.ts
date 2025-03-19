@@ -19,14 +19,35 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "https://www.google.com",
+        "https://www.gstatic.com",
+        "https://*.google.com",
+        "https://*.gstatic.com"
+      ],
+      frameSrc: [
+        "'self'",
+        "https://www.google.com",
+        "https://recaptcha.google.com",
+        "https://www.recaptcha.net"
+      ],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://www.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "https://www.google.com/recaptcha/", "https://www.google.com/recaptcha/api/", "https://www.gstatic.com/recaptcha/", "ws:", "wss:"],
-      frameSrc: ["'self'", "https://www.google.com/recaptcha/"],
+      connectSrc: [
+        "'self'",
+        "https://www.google.com",
+        "https://*.google.com",
+        "https://www.gstatic.com",
+        "https://*.gstatic.com",
+        "ws:",
+        "wss:"
+      ],
       workerSrc: ["'self'", "blob:"],
-      childSrc: ["'self'", "blob:"],
-      formAction: ["'self'", "https://www.google.com/recaptcha/"],
+      childSrc: ["'self'", "blob:", "https://www.google.com"],
+      formAction: ["'self'", "https://www.google.com"],
       upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
     },
   },
