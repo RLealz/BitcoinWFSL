@@ -12,6 +12,36 @@
     background: linear-gradient(135deg, #1a1a2e 0%, #4a1578 100%);
     background-attachment: fixed;
   }
+
+  /* Accessibility Font Size Classes */
+  .text-normal {
+    font-size: 1rem;
+  }
+
+  .text-large {
+    font-size: 1.2rem;
+  }
+
+  .text-larger {
+    font-size: 1.4rem;
+  }
+
+  /* High Contrast Mode */
+  .contrast-high {
+    --contrast-bg: #000000;
+    --contrast-text: #ffffff;
+    --contrast-border: #ffffff;
+    --contrast-primary: #ffff00;
+    --contrast-focus: #00ff00;
+  }
+
+  .contrast-normal {
+    --contrast-bg: inherit;
+    --contrast-text: inherit;
+    --contrast-border: inherit;
+    --contrast-primary: inherit;
+    --contrast-focus: inherit;
+  }
 }
 
 @layer utilities {
@@ -22,6 +52,24 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80;
+  }
+
+  /* Focus Indicators for Accessibility */
+  .focus-visible:focus-visible {
+    outline: 3px solid var(--contrast-focus, #00ff00);
+    outline-offset: 2px;
+  }
+
+  /* High Contrast Text */
+  .contrast-high * {
+    color: var(--contrast-text) !important;
+    background-color: var(--contrast-bg) !important;
+    border-color: var(--contrast-border) !important;
+  }
+
+  .contrast-high a,
+  .contrast-high button {
+    color: var(--contrast-primary) !important;
   }
 }
 

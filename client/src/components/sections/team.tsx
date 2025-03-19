@@ -15,8 +15,7 @@ const team = [
   {
     name: "João Gomes",
     role: "Founder & CEO",
-    description:
-      "Visionário surdo em blockchain e finanças descentralizadas, com uma paixão por inovação tecnológica e inclusão. Também CEO da Bitcoin da Federação Mundial das Línguas.",
+    description: "Visionário surdo em blockchain e Acessibilidade/Inclusão.",
     image: "/team/joao-gomes.jpg",
     education: undefined,
     longDescription: `Com mais de 20 anos de experiência em Proteção Civil e Community Building, João é um pioneiro no desenvolvimento de soluções inclusivas para a comunidade surda.`,
@@ -37,7 +36,7 @@ const team = [
     name: "D4rk0s",
     role: "CTO & Co-Founder",
     description:
-      "Especialista em segurança blockchain e desenvolvimento de sistemas distribuídos.",
+      "Especialista em segurança blockchain e sistemas distribuídos.",
     image: "/team/d4rk0s.jpg",
     longDescription: `Líder técnico com vasta experiência em segurança blockchain e sistemas distribuídos. D4rk0s tem sido fundamental no desenvolvimento da infraestrutura técnica segura e escalável da plataforma.
 
