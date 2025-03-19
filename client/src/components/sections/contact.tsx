@@ -44,8 +44,10 @@ export default function Contact() {
   });
 
   const resetCaptcha = useCallback(() => {
-    recaptchaRef.current?.reset();
-    setCaptchaToken(null);
+    if (recaptchaRef.current) {
+      recaptchaRef.current.reset();
+      setCaptchaToken(null);
+    }
   }, []);
 
   const mutation = useMutation({
@@ -56,25 +58,16 @@ export default function Contact() {
 
       try {
         setIsSubmitting(true);
-        console.log("Submitting form with data:", {
-          ...data,
-          captchaToken: `${captchaToken.substring(0, 10)}...`,
-        });
-
         const response = await apiRequest("POST", "/api/leads", {
           ...data,
           captchaToken,
         });
 
-        const result = await response.json();
-        console.log("Form submission successful:", result);
-        return result;
-      } catch (error) {
-        console.error("Form submission failed:", error);
-        resetCaptcha();
-        throw error;
+        return response.json();
       } finally {
         setIsSubmitting(false);
+        // Clear captcha after submission regardless of result
+        resetCaptcha();
       }
     },
     onSuccess: () => {
@@ -83,37 +76,38 @@ export default function Contact() {
         description: "Obrigado pelo seu interesse. Entraremos em contato em breve!",
       });
       form.reset();
-      resetCaptcha();
     },
     onError: (error) => {
-      console.error("Mutation error:", error);
       toast({
         title: "Erro",
         description: error instanceof Error ? error.message : "Algo deu errado. Por favor, tente novamente.",
         variant: "destructive",
       });
-      resetCaptcha();
     },
   });
 
   const onSubmit = async (data: InsertLead) => {
+    if (!captchaToken) {
+      toast({
+        title: "Erro",
+        description: "Por favor, complete o captcha antes de enviar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      if (!captchaToken) {
-        toast({
-          title: "Erro",
-          description: "Por favor, complete o captcha antes de enviar.",
-          variant: "destructive",
-        });
-        return;
-      }
       await mutation.mutateAsync(data);
     } catch (error) {
+      // Error is handled by mutation's onError
       console.error("Submit error:", error);
     }
   };
 
   const handleCaptchaChange = (token: string | null) => {
-    console.log("reCAPTCHA token received:", token ? "valid token" : "no token");
+    if (!token) {
+      resetCaptcha();
+    }
     setCaptchaToken(token);
   };
 
@@ -234,11 +228,11 @@ export default function Contact() {
                   onChange={handleCaptchaChange}
                   onExpired={() => {
                     console.log("reCAPTCHA expired");
-                    setCaptchaToken(null);
+                    resetCaptcha();
                   }}
                   onError={() => {
                     console.error("reCAPTCHA error");
-                    setCaptchaToken(null);
+                    resetCaptcha();
                     toast({
                       title: "Erro",
                       description: "Erro ao carregar o captcha. Por favor, recarregue a página.",
