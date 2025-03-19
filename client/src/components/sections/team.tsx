@@ -18,6 +18,7 @@ const team = [
     description:
       "Visionário surdo em blockchain e finanças descentralizadas, com uma paixão por inovação tecnológica e inclusão. Também CEO da Bitcoin da Federação Mundial das Línguas.",
     image: "/team/joao-gomes.jpg",
+    education: undefined,
     longDescription: `Com mais de 20 anos de experiência em Proteção Civil e Community Building, João é um pioneiro no desenvolvimento de soluções inclusivas para a comunidade surda.`,
     expertise: [
       "Soluções Acessiveis",
@@ -148,12 +149,14 @@ export default function Team() {
                         </div>
                       </div>
 
-                      <div>
-                        <h4 className="text-[#FFD700] font-semibold mb-2">
-                          Formação
-                        </h4>
-                        <p className="text-white/90">{member.education}</p>
-                      </div>
+                      {member.education && (
+                        <div>
+                          <h4 className="text-[#FFD700] font-semibold mb-2">
+                            Formação
+                          </h4>
+                          <p className="text-white/90">{member.education}</p>
+                        </div>
+                      )}
 
                       <div className="flex justify-center gap-4 pt-4 border-t border-white/10">
                         <a
