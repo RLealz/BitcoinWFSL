@@ -51,25 +51,30 @@ export default function Contact() {
 
       try {
         setIsSubmitting(true);
-        console.log("Submitting form with reCAPTCHA token");
+        console.log("Submitting form with data:", { ...data, captchaToken: 'token-hidden' });
 
-        const res = await apiRequest("POST", "/api/leads", {
+        const response = await apiRequest("POST", "/api/leads", {
           ...data,
-          captchaToken
+          captchaToken,
         });
 
-        if (!res.ok) {
-          const errorData = await res.json();
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Form submission error:", errorData);
           throw new Error(errorData.message || "Erro ao enviar formulário");
         }
 
-        return await res.json();
+        const result = await response.json();
+        console.log("Form submission successful:", result);
+        return result;
+      } catch (error) {
+        console.error("Form submission failed:", error);
+        throw error;
       } finally {
         setIsSubmitting(false);
       }
     },
     onSuccess: () => {
-      console.log("Form submitted successfully");
       toast({
         title: "Sucesso",
         description: "Obrigado pelo seu interesse. Entraremos em contato em breve!",
@@ -79,28 +84,31 @@ export default function Contact() {
       recaptchaRef.current?.reset();
     },
     onError: (error) => {
-      console.error("Form submission error:", error);
+      console.error("Mutation error:", error);
       toast({
         title: "Erro",
         description: error instanceof Error ? error.message : "Algo deu errado. Por favor, tente novamente.",
         variant: "destructive",
       });
-      // Reset reCAPTCHA on error
       recaptchaRef.current?.reset();
       setCaptchaToken(null);
     },
   });
 
-  const onSubmit = (data: InsertLead) => {
-    if (!captchaToken) {
-      toast({
-        title: "Erro",
-        description: "Por favor, complete o captcha antes de enviar.",
-        variant: "destructive",
-      });
-      return;
+  const onSubmit = async (data: InsertLead) => {
+    try {
+      if (!captchaToken) {
+        toast({
+          title: "Erro",
+          description: "Por favor, complete o captcha antes de enviar.",
+          variant: "destructive",
+        });
+        return;
+      }
+      await mutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Submit error:", error);
     }
-    mutation.mutate(data);
   };
 
   return (
@@ -241,7 +249,7 @@ export default function Contact() {
               <Button
                 type="submit"
                 className="w-full bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-semibold"
-                disabled={mutation.isPending || !captchaToken || isSubmitting}
+                disabled={isSubmitting || !captchaToken}
               >
                 {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
               </Button>
