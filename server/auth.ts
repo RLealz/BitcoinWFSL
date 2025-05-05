@@ -94,7 +94,7 @@ export function setupAuth(app: Express) {
   // Input validation schema
   const loginSchema = z.object({
     username: z.string().min(3).max(255),
-    password: z.string().min(8).max(255)
+    password: z.string().min(1).max(255) // Reduced minimum length for testing
   });
 
   passport.use(

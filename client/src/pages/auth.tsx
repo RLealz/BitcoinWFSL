@@ -40,7 +40,7 @@ export default function AuthPage() {
   // Handle redirect after all hooks are called
   useEffect(() => {
     if (user) {
-      setLocation("/admin");
+      setLocation("/dashboard");
     }
   }, [user, setLocation]);
 
