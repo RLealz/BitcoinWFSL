@@ -23,13 +23,49 @@ export default function AuthPage() {
     e.preventDefault();
     setError('');
 
+    // Form validation
+    if (!formData.username.trim()) {
+      setError('Nome de usuário é obrigatório.');
+      return;
+    }
+
+    if (!formData.password.trim()) {
+      setError('Senha é obrigatória.');
+      return;
+    }
+
     if (!isLogin && formData.password !== formData.confirmPassword) {
       setError('As senhas não coincidem.');
       return;
     }
 
-    // Here we would handle authentication logic
-    console.log('Form submitted:', formData);
+    try {
+      const endpoint = isLogin ? '/api/login' : '/api/register';
+      
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important for cookies
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Ocorreu um erro durante a autenticação.');
+      }
+
+      // Authentication successful
+      window.location.href = '/admin'; // Redirect to admin dashboard
+    } catch (error) {
+      console.error('Authentication error:', error);
+      setError(error instanceof Error ? error.message : 'Ocorreu um erro durante a autenticação.');
+    }
   };
 
   return (
