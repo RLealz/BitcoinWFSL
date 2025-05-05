@@ -1,4 +1,4 @@
-import { pool } from './server/db';
+import { pool } from './server/db.js';
 
 // This script will create all tables in the database
 async function main() {
@@ -21,7 +21,7 @@ async function main() {
         profile_completed BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+      )
     `);
     
     // Create user_profiles table
@@ -41,7 +41,7 @@ async function main() {
         prefers_high_contrast BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+      )
     `);
     
     // Create investment_plans table
@@ -58,7 +58,7 @@ async function main() {
         is_active BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+      )
     `);
     
     // Create leads table
@@ -74,7 +74,7 @@ async function main() {
         converted_to_user BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+      )
     `);
     
     // Create session table for auth session persistence
@@ -85,14 +85,17 @@ async function main() {
         "sess" json NOT NULL,
         "expire" timestamp(6) NOT NULL,
         CONSTRAINT "session_pkey" PRIMARY KEY ("sid")
-      );
-      CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
+      )
+    `);
+    
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire")
     `);
     
     // Create an admin user for testing
     console.log('Checking for admin user...');
     const adminUserExists = await pool.query(`
-      SELECT * FROM users WHERE username = 'admin' LIMIT 1;
+      SELECT * FROM users WHERE username = 'admin' LIMIT 1
     `);
     
     if (adminUserExists.rowCount === 0) {
@@ -105,7 +108,7 @@ async function main() {
           'admin@example.com',
           TRUE,
           TRUE
-        );
+        )
       `);
       // Note: Password is 'adminpassword' hashed with scrypt
     } else {
@@ -115,7 +118,7 @@ async function main() {
     // Create sample investment plans if none exist
     console.log('Checking for investment plans...');
     const plansExist = await pool.query(`
-      SELECT COUNT(*) FROM investment_plans;
+      SELECT COUNT(*) FROM investment_plans
     `);
     
     if (plansExist.rows[0].count === '0') {
@@ -126,7 +129,7 @@ async function main() {
         VALUES
           ('Conservative Plan', 'Low-risk investment with stable returns. Perfect for beginners or risk-averse investors.', 1000.00, 0.50, 6, 'low', TRUE),
           ('Balanced Growth', 'Medium-risk investment balancing stability and growth. Ideal for intermediate investors.', 5000.00, 1.20, 12, 'medium', TRUE),
-          ('Aggressive Growth', 'Higher-risk investment strategy focusing on maximum returns. For experienced investors.', 10000.00, 2.50, 18, 'high', TRUE);
+          ('Aggressive Growth', 'Higher-risk investment strategy focusing on maximum returns. For experienced investors.', 10000.00, 2.50, 18, 'high', TRUE)
       `);
     } else {
       console.log('Investment plans already exist');
