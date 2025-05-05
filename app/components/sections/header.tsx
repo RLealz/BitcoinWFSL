@@ -2,20 +2,23 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Menu, X, Bitcoin } from "lucide-react";
 import { Button } from "../ui/button";
-import { Bitcoin } from "lucide-react";
 import { AccessibilityControls } from "../ui/accessibility-controls";
+import { NavigationMenu, NavigationMenuItem } from "../ui/navigation-menu";
 
 export default function Header() {
+  const pathname = usePathname();
   const [user, setUser] = React.useState<null | { id: number }>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
-  // Function to handle smooth scrolling to sections
-  const handleScroll = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
   };
+
+  // Check if we're on the home page to determine whether to use scroll links
+  const isHomePage = pathname === '/';
 
   return (
     <header className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-sm border-b border-white/10">
@@ -27,32 +30,38 @@ export default function Header() {
             <span className="text-xl font-bold text-[#FFD700]">BITCOIN WFSL</span>
           </Link>
 
-          {/* Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => handleScroll("servicos")}
-              className="text-white hover:text-[#FFD700] transition-colors"
-            >
-              Serviços
-            </button>
-            <button
-              onClick={() => handleScroll("planos")}
-              className="text-white hover:text-[#FFD700] transition-colors"
-            >
-              Planos
-            </button>
-            <button
-              onClick={() => handleScroll("equipa")}
-              className="text-white hover:text-[#FFD700] transition-colors"
-            >
-              Equipa
-            </button>
-            <button
-              onClick={() => handleScroll("contact")}
-              className="text-white hover:text-[#FFD700] transition-colors"
-            >
-              Contato
-            </button>
+          {/* Desktop Navigation */}
+          <div className="hidden md:block">
+            <NavigationMenu>
+              <NavigationMenuItem 
+                href="#servicos" 
+                isScrollLink={isHomePage}
+                className="px-4"
+              >
+                Serviços
+              </NavigationMenuItem>
+              <NavigationMenuItem 
+                href="#planos" 
+                isScrollLink={isHomePage}
+                className="px-4"
+              >
+                Planos
+              </NavigationMenuItem>
+              <NavigationMenuItem 
+                href="#equipa" 
+                isScrollLink={isHomePage}
+                className="px-4"
+              >
+                Equipa
+              </NavigationMenuItem>
+              <NavigationMenuItem 
+                href="#contact" 
+                isScrollLink={isHomePage}
+                className="px-4"
+              >
+                Contato
+              </NavigationMenuItem>
+            </NavigationMenu>
           </div>
 
           {/* Accessibility Controls and Auth Button */}
@@ -71,6 +80,58 @@ export default function Header() {
                 </Button>
               </Link>
             )}
+
+            {/* Mobile Menu Toggle */}
+            <button 
+              className="inline-flex md:hidden items-center justify-center p-2 rounded-md text-white hover:text-[#FFD700] focus:outline-none"
+              onClick={toggleMobileMenu}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Menu */}
+        <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'} py-4`}>
+          <div className="flex flex-col space-y-4 px-2">
+            <NavigationMenuItem 
+              href="#servicos" 
+              isScrollLink={isHomePage}
+              className="block py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Serviços
+            </NavigationMenuItem>
+            <NavigationMenuItem 
+              href="#planos" 
+              isScrollLink={isHomePage}
+              className="block py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Planos
+            </NavigationMenuItem>
+            <NavigationMenuItem 
+              href="#equipa" 
+              isScrollLink={isHomePage}
+              className="block py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Equipa
+            </NavigationMenuItem>
+            <NavigationMenuItem 
+              href="#contact" 
+              isScrollLink={isHomePage}
+              className="block py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contato
+            </NavigationMenuItem>
           </div>
         </div>
       </nav>
