@@ -53,15 +53,29 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <AccessibilityControls />
             {user ? (
-              <Link href="/admin">
-                <Button variant="outline" className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black">
-                  Dashboard
-                </Button>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link href="/dashboard">
+                  <Button variant="outline" className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Link href="/profile">
+                  <Button variant="ghost" className="text-white hover:text-[#FFD700]">
+                    Profile
+                  </Button>
+                </Link>
+                {user.isAdmin && (
+                  <Link href="/admin">
+                    <Button variant="ghost" className="text-white hover:text-[#FFD700]">
+                      Admin
+                    </Button>
+                  </Link>
+                )}
+              </div>
             ) : (
               <Link href="/auth">
                 <Button variant="outline" className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black">
-                  Admin
+                  Login
                 </Button>
               </Link>
             )}
