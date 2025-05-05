@@ -15,43 +15,63 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Helper to safely access browser APIs
+const isBrowser = typeof window !== "undefined";
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Initialize state from localStorage or defaults
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem("theme") as Theme;
-    if (saved === "light" || saved === "dark") return saved;
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
-    return "light";
-  });
-
-  const [contrast, setContrast] = useState<Contrast>(() => {
-    const saved = localStorage.getItem("contrast") as Contrast;
-    return saved === "high" ? "high" : "normal";
-  });
-
-  const [fontSize, setFontSize] = useState<FontSize>(() => {
-    const saved = localStorage.getItem("fontSize") as FontSize;
-    if (saved === "large" || saved === "larger") return saved;
-    return "normal";
-  });
-
-  // Persist settings to localStorage
+  // Initialize with default values first
+  const [theme, setTheme] = useState<Theme>("light");
+  const [contrast, setContrast] = useState<Contrast>("normal");
+  const [fontSize, setFontSize] = useState<FontSize>("normal");
+  
+  // Initialization effect that runs only in the browser
   useEffect(() => {
-    localStorage.setItem("theme", theme);
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(theme);
+    if (isBrowser) {
+      // Theme initialization
+      const savedTheme = localStorage.getItem("theme") as Theme;
+      if (savedTheme === "light" || savedTheme === "dark") {
+        setTheme(savedTheme);
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setTheme("dark");
+      }
+      
+      // Contrast initialization
+      const savedContrast = localStorage.getItem("contrast") as Contrast;
+      if (savedContrast === "high") {
+        setContrast("high");
+      }
+      
+      // Font size initialization
+      const savedFontSize = localStorage.getItem("fontSize") as FontSize;
+      if (savedFontSize === "large" || savedFontSize === "larger") {
+        setFontSize(savedFontSize);
+      }
+    }
+  }, []);
+
+  // Persist settings to localStorage and update class names
+  useEffect(() => {
+    if (isBrowser) {
+      localStorage.setItem("theme", theme);
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(theme);
+    }
   }, [theme]);
 
   useEffect(() => {
-    localStorage.setItem("contrast", contrast);
-    document.documentElement.classList.remove("contrast-normal", "contrast-high");
-    document.documentElement.classList.add(`contrast-${contrast}`);
+    if (isBrowser) {
+      localStorage.setItem("contrast", contrast);
+      document.documentElement.classList.remove("contrast-normal", "contrast-high");
+      document.documentElement.classList.add(`contrast-${contrast}`);
+    }
   }, [contrast]);
 
   useEffect(() => {
-    localStorage.setItem("fontSize", fontSize);
-    document.documentElement.classList.remove("text-normal", "text-large", "text-larger");
-    document.documentElement.classList.add(`text-${fontSize}`);
+    if (isBrowser) {
+      localStorage.setItem("fontSize", fontSize);
+      document.documentElement.classList.remove("text-normal", "text-large", "text-larger");
+      document.documentElement.classList.add(`text-${fontSize}`);
+    }
   }, [fontSize]);
 
   return (
