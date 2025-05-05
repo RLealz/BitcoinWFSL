@@ -1,11 +1,19 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertLeadSchema, leads } from "@shared/schema";
+import { 
+  insertLeadSchema, 
+  insertUserProfileSchema, 
+  insertInvestmentPlanSchema,
+  leads,
+  users,
+  userProfiles,
+  investmentPlans 
+} from "@shared/schema";
 import fetch from "node-fetch";
 import { setupAuth } from "./auth";
 import { db } from "./db";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { z } from "zod";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -154,8 +162,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     message: { message: "Too many requests, please try again later" }
   });
 
+  // Rate limiting for user endpoints
+  const userLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 200,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: { message: "Too many requests, please try again later" }
+  });
+
   // Set up authentication
   setupAuth(app);
+
+  // Check if user is admin middleware
+  function requireAdmin(req: Request, res: Response, next: NextFunction) {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.status(403).json({ message: "Forbidden: Admin access required" });
+    }
+    next();
+  }
 
   // Public routes with rate limiting
   app.post("/api/leads", publicLimiter, async (req, res, next) => {
@@ -183,10 +208,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Protected routes (admin only) with rate limiting
-  app.get("/api/admin/leads", requireAuth, adminLimiter, async (req, res, next) => {
+  // Public routes - Investment plans
+  app.get("/api/investment-plans", publicLimiter, async (req, res, next) => {
     try {
-      console.log("Fetching leads for authenticated user:", req.user);
+      // Only active plans are visible to the public
+      const plans = await storage.getInvestmentPlans(true);
+      res.json(plans);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/investment-plans/:id", publicLimiter, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        throw new ApiError("Invalid ID", 400, "INVALID_ID");
+      }
+
+      const plan = await storage.getInvestmentPlanById(id);
+      if (!plan || !plan.isActive) {
+        throw new ApiError("Investment plan not found", 404, "NOT_FOUND");
+      }
+
+      res.json(plan);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // User profile routes - For authenticated users
+  app.get("/api/user/profile", requireAuth, userLimiter, async (req, res, next) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const profile = await storage.getUserProfile(req.user.id);
+      res.json(profile || { userId: req.user.id });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/user/profile", requireAuth, userLimiter, async (req, res, next) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      // Validate profile data
+      const validatedData = insertUserProfileSchema.parse(req.body);
+      
+      // Check if profile already exists
+      const existingProfile = await storage.getUserProfile(req.user.id);
+      
+      let profile;
+      if (existingProfile) {
+        // Update existing profile
+        profile = await storage.updateUserProfile(req.user.id, validatedData);
+      } else {
+        // Create new profile
+        profile = await storage.createUserProfile({
+          ...validatedData,
+          userId: req.user.id
+        });
+        
+        // Update user to mark profile as completed
+        await storage.updateUser(req.user.id, { profileCompleted: true });
+      }
+      
+      res.json(profile);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Admin routes - Leads management
+  app.get("/api/admin/leads", requireAuth, requireAdmin, adminLimiter, async (req, res, next) => {
+    try {
+      console.log("Fetching leads for admin user:", req.user);
       const allLeads = await db.select().from(leads).orderBy(desc(leads.createdAt));
       console.log(`Found ${allLeads.length} leads`);
       res.json(allLeads);
@@ -196,8 +296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Add delete endpoint with proper validation
-  app.delete("/api/admin/leads/:id", requireAuth, adminLimiter, async (req, res, next) => {
+  app.delete("/api/admin/leads/:id", requireAuth, requireAdmin, adminLimiter, async (req, res, next) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -216,6 +315,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(deletedLead);
     } catch (error) {
       console.error("Error deleting lead:", error);
+      next(error);
+    }
+  });
+
+  // Admin routes - Investment plans management
+  app.get("/api/admin/investment-plans", requireAuth, requireAdmin, adminLimiter, async (req, res, next) => {
+    try {
+      // Admin can see all plans including inactive ones
+      const plans = await storage.getInvestmentPlans(false);
+      res.json(plans);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/admin/investment-plans", requireAuth, requireAdmin, adminLimiter, async (req, res, next) => {
+    try {
+      // Validate plan data
+      const validatedData = insertInvestmentPlanSchema.parse(req.body);
+      
+      // Create new plan
+      const plan = await storage.createInvestmentPlan(validatedData);
+      res.status(201).json(plan);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/admin/investment-plans/:id", requireAuth, requireAdmin, adminLimiter, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        throw new ApiError("Invalid ID", 400, "INVALID_ID");
+      }
+
+      // Validate plan data
+      // Allow partial updates
+      const validatedData = insertInvestmentPlanSchema.partial().parse(req.body);
+      
+      // Update plan
+      const plan = await storage.updateInvestmentPlan(id, validatedData);
+      if (!plan) {
+        throw new ApiError("Investment plan not found", 404, "NOT_FOUND");
+      }
+      
+      res.json(plan);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Admin routes - Users management
+  app.get("/api/admin/users", requireAuth, requireAdmin, adminLimiter, async (req, res, next) => {
+    try {
+      const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
+      console.log(`Found ${allUsers.length} users`);
+      res.json(allUsers);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      next(error);
+    }
+  });
+
+  app.get("/api/admin/users/:id", requireAuth, requireAdmin, adminLimiter, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        throw new ApiError("Invalid ID", 400, "INVALID_ID");
+      }
+
+      const user = await storage.getUser(id);
+      if (!user) {
+        throw new ApiError("User not found", 404, "NOT_FOUND");
+      }
+
+      // Get user profile if it exists
+      const profile = await storage.getUserProfile(id);
+      
+      // Combine user and profile data
+      res.json({
+        ...user,
+        profile
+      });
+    } catch (error) {
       next(error);
     }
   });

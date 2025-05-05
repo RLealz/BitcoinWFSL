@@ -104,6 +104,7 @@ export const insertLeadSchema = createInsertSchema(leads, {
   phone: z.string().optional().nullable(),
   investmentRange: z.string().optional().nullable(),
   message: z.string().optional().nullable(),
+  convertedToUser: z.boolean().optional(),
 })
 .pick({
   name: true,
@@ -112,7 +113,7 @@ export const insertLeadSchema = createInsertSchema(leads, {
   investmentRange: true,
   message: true,
 })
-.omit({ createdAt: true, updatedAt: true });
+.omit({ createdAt: true, updatedAt: true, convertedToUser: true });
 
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
