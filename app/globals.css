@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased text-foreground min-h-screen;
+    background: linear-gradient(135deg, #1a1a2e 0%, #4a1578 100%);
+    background-attachment: fixed;
+  }
+
+  /* Accessibility Font Size Classes */
+  .text-normal {
+    font-size: 1rem;
+  }
+
+  .text-large {
+    font-size: 1.2rem;
+  }
+
+  .text-larger {
+    font-size: 1.4rem;
+  }
+
+  /* High Contrast Mode */
+  .contrast-high {
+    --contrast-bg: #000000;
+    --contrast-text: #ffffff;
+    --contrast-border: #ffffff;
+    --contrast-primary: #ffff00;
+    --contrast-focus: #00ff00;
+  }
+
+  .contrast-normal {
+    --contrast-bg: inherit;
+    --contrast-text: inherit;
+    --contrast-border: inherit;
+    --contrast-primary: inherit;
+    --contrast-focus: inherit;
+  }
+}
+
+@layer utilities {
+  .gradient-background {
+    background: transparent;
+    @apply text-white relative z-10;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80;
+  }
+
+  /* Focus Indicators for Accessibility */
+  .focus-visible:focus-visible {
+    outline: 3px solid var(--contrast-focus, #00ff00);
+    outline-offset: 2px;
+  }
+
+  /* High Contrast Text */
+  .contrast-high * {
+    color: var(--contrast-text) !important;
+    background-color: var(--contrast-bg) !important;
+    border-color: var(--contrast-border) !important;
+  }
+
+  .contrast-high a,
+  .contrast-high button {
+    color: var(--contrast-primary) !important;
+  }
+}
+
+/* Custom animations */
+.bitcoin-symbol {
+  font-size: 160px;
+  color: #F7931A;
+  text-shadow: 0 0 20px rgba(247, 147, 26, 0.5);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Remove section transitions since we're using a fixed background */
+section {
+  position: relative;
+  overflow: hidden;
+  @apply relative z-10;
+}
