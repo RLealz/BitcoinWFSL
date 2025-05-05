@@ -1,5 +1,6 @@
-import Header from '@/components/sections/header';
-import Footer from '@/components/sections/footer';
+import React from 'react';
+import Header from '../components/sections/header';
+import Footer from '../components/sections/footer';
 
 export default function AuthPage() {
   return (

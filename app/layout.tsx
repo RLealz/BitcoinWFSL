@@ -1,14 +1,10 @@
-import React from 'react';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from './components/theme-provider';
 
-const inter = Inter({ subsets: ['latin'] });
-
 export const metadata: Metadata = {
-  title: 'Bitcoin WFSL - Investimentos em Criptomoedas',
-  description: 'Faça Crescer a Sua Riqueza com Investimentos em Criptomoedas',
+  title: 'Bitcoin WFSL - Investimentos em Bitcoin',
+  description: 'Investimentos em bitcoin com segurança, transparência e resultados comprovados.',
 };
 
 export default function RootLayout({
@@ -18,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
+      <body className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
         <ThemeProvider>
           {children}
         </ThemeProvider>

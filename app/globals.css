@@ -2,97 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply font-sans antialiased text-foreground min-h-screen;
-    background: linear-gradient(135deg, #1a1a2e 0%, #4a1578 100%);
-    background-attachment: fixed;
-  }
-
-  /* Accessibility Font Size Classes */
-  .text-normal {
-    font-size: 1rem;
-  }
-
-  .text-large {
-    font-size: 1.2rem;
-  }
-
-  .text-larger {
-    font-size: 1.4rem;
-  }
-
-  /* High Contrast Mode */
-  .contrast-high {
-    --contrast-bg: #000000;
-    --contrast-text: #ffffff;
-    --contrast-border: #ffffff;
-    --contrast-primary: #ffff00;
-    --contrast-focus: #00ff00;
-  }
-
-  .contrast-normal {
-    --contrast-bg: inherit;
-    --contrast-text: inherit;
-    --contrast-border: inherit;
-    --contrast-primary: inherit;
-    --contrast-focus: inherit;
-  }
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }
 
-@layer utilities {
-  .gradient-background {
-    background: transparent;
-    @apply text-white relative z-10;
-  }
-
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80;
-  }
-
-  /* Focus Indicators for Accessibility */
-  .focus-visible:focus-visible {
-    outline: 3px solid var(--contrast-focus, #00ff00);
-    outline-offset: 2px;
-  }
-
-  /* High Contrast Text */
-  .contrast-high * {
-    color: var(--contrast-text) !important;
-    background-color: var(--contrast-bg) !important;
-    border-color: var(--contrast-border) !important;
-  }
-
-  .contrast-high a,
-  .contrast-high button {
-    color: var(--contrast-primary) !important;
-  }
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
 }
 
-/* Custom animations */
+/* Bitcoin specific styles */
 .bitcoin-symbol {
-  font-size: 160px;
-  color: #F7931A;
-  text-shadow: 0 0 20px rgba(247, 147, 26, 0.5);
-  animation: float 3s ease-in-out infinite;
+  font-size: 6rem;
+  line-height: 1;
+  color: #FFD700;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+/* High contrast mode */
+.high-contrast {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }
 
-/* Remove section transitions since we're using a fixed background */
-section {
-  position: relative;
-  overflow: hidden;
-  @apply relative z-10;
+.high-contrast .text-white\/70,
+.high-contrast .text-white\/60,
+.high-contrast .text-white\/80 {
+  color: rgb(255, 255, 255);
+}
+
+.high-contrast a:hover,
+.high-contrast button:hover {
+  text-decoration: underline;
+}
+
+/* Font size adjustments */
+.text-normal {
+  font-size: 100%;
+}
+
+.text-large {
+  font-size: 120%;
+}
+
+.text-larger {
+  font-size: 150%;
+}
+
+.text-large h1, .text-larger h1 {
+  font-size: 150%;
+}
+
+.text-large p, .text-larger p {
+  line-height: 1.5;
 }
