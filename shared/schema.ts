@@ -1,3 +1,6 @@
+The change introduces a new `fundType` field to the `investmentPlanSchema` with a default value of "crypto". The original code defines database schemas and Zod schemas for validation, and this change modifies the investment plan schema to include the fund type.
+```
+```replit_final_file
 import { pgTable, text, serial, timestamp, varchar, boolean, integer, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -124,3 +127,14 @@ export type InsertInvestmentPlan = z.infer<typeof insertInvestmentPlanSchema>;
 export type InvestmentPlan = typeof investmentPlans.$inferSelect;
 export type InsertLead = z.infer<typeof insertLeadSchema>;
 export type Lead = typeof leads.$inferSelect;
+
+export const investmentPlanSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string(),
+  minimumInvestment: z.string(),
+  monthlyReturnRate: z.string(),
+  durationMonths: z.number(),
+  riskLevel: z.enum(["low", "medium", "high"]),
+  fundType: z.enum(["crypto", "real-estate", "emerging-tech"]).default("crypto"),
+});
