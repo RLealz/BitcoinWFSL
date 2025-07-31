@@ -20,15 +20,16 @@ export default function InvestmentPlans() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  // Use sample data if API fails or returns empty data
-  const plans = apiPlans && apiPlans.length > 0 ? apiPlans : sampleInvestmentPlans as InvestmentPlan[];
+  // Force use sample data for now to test the tabbed interface
+  const plans = sampleInvestmentPlans as InvestmentPlan[];
   
   // Debug logging
+  console.log('🚀 Investment Plans Component Loaded');
   console.log('API Plans:', apiPlans);
   console.log('Is Loading:', isLoading);
   console.log('Is Error:', isError);
+  console.log('Sample Plans Length:', sampleInvestmentPlans.length);
   console.log('Final Plans:', plans);
-  console.log('Sample Plans:', sampleInvestmentPlans);
 
   // Function to handle plan selection
   const handlePlanSelection = (planId: number) => {
@@ -85,15 +86,23 @@ export default function InvestmentPlans() {
 
   // Filter plans by fund type
   const filterPlansByType = (fundType: string) => {
-    if (!plans) return [];
-    return plans.filter(plan => {
+    console.log(`🔍 Filtering plans for fundType: ${fundType}`);
+    if (!plans) {
+      console.log('❌ No plans available');
+      return [];
+    }
+    const filtered = plans.filter(plan => {
       const planFundType = (plan as any).fundType || 'crypto';
-      return planFundType === fundType;
+      const matches = planFundType === fundType;
+      console.log(`Plan: ${plan.name}, Type: ${planFundType}, Matches: ${matches}`);
+      return matches;
     });
+    console.log(`✅ Found ${filtered.length} plans for ${fundType}`);
+    return filtered;
   };
 
-  // Show loading state
-  if (isLoading) {
+  // Show loading state only if we don't have sample data
+  if (isLoading && !sampleInvestmentPlans.length) {
     return (
       <section id="plans" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
