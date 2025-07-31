@@ -20,16 +20,8 @@ export default function InvestmentPlans() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  // Force use sample data for now to test the tabbed interface
-  const plans = sampleInvestmentPlans as InvestmentPlan[];
-  
-  // Debug logging
-  console.log('🚀 Investment Plans Component Loaded');
-  console.log('API Plans:', apiPlans);
-  console.log('Is Loading:', isLoading);
-  console.log('Is Error:', isError);
-  console.log('Sample Plans Length:', sampleInvestmentPlans.length);
-  console.log('Final Plans:', plans);
+  // Use sample data if API fails or returns empty data
+  const plans = apiPlans && apiPlans.length > 0 ? apiPlans : sampleInvestmentPlans as InvestmentPlan[];
 
   // Function to handle plan selection
   const handlePlanSelection = (planId: number) => {
@@ -37,18 +29,18 @@ export default function InvestmentPlans() {
     
     // If user is not logged in, show a toast to prompt login
     toast({
-      title: "Authentication Required",
-      description: "Please log in or register to invest in this plan.",
+      title: "Autenticação Necessária",
+      description: "Por favor, inicie sessão ou registe-se para investir neste plano.",
       variant: "default",
       action: (
         <Button variant="outline" size="sm" onClick={() => window.location.href = "/auth"}>
-          Login / Register
+          Entrar / Registar
         </Button>
       ),
     });
   };
 
-  // Function to get risk level badge color
+  // Function to get risk level badge color and text
   const getRiskLevelColor = (riskLevel: string) => {
     switch (riskLevel.toLowerCase()) {
       case 'low':
@@ -59,6 +51,20 @@ export default function InvestmentPlans() {
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Function to translate risk level
+  const translateRiskLevel = (riskLevel: string) => {
+    switch (riskLevel.toLowerCase()) {
+      case 'low':
+        return "Baixo Risco";
+      case 'medium':
+        return "Médio Risco";
+      case 'high':
+        return "Alto Risco";
+      default:
+        return "Risco";
     }
   };
 
@@ -86,30 +92,22 @@ export default function InvestmentPlans() {
 
   // Filter plans by fund type
   const filterPlansByType = (fundType: string) => {
-    console.log(`🔍 Filtering plans for fundType: ${fundType}`);
-    if (!plans) {
-      console.log('❌ No plans available');
-      return [];
-    }
-    const filtered = plans.filter(plan => {
+    if (!plans) return [];
+    return plans.filter(plan => {
       const planFundType = (plan as any).fundType || 'crypto';
-      const matches = planFundType === fundType;
-      console.log(`Plan: ${plan.name}, Type: ${planFundType}, Matches: ${matches}`);
-      return matches;
+      return planFundType === fundType;
     });
-    console.log(`✅ Found ${filtered.length} plans for ${fundType}`);
-    return filtered;
   };
 
-  // Show loading state only if we don't have sample data
-  if (isLoading && !sampleInvestmentPlans.length) {
+  // Show loading state
+  if (isLoading) {
     return (
-      <section id="plans" className="py-16 bg-gray-50">
+      <section id="plans" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Investment Plans</h2>
+            <h2 className="text-3xl font-bold mb-4">Planos de Investimento</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Loading investment options...
+              A carregar as opções de investimento...
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -136,16 +134,16 @@ export default function InvestmentPlans() {
     );
   }
 
-  // Always show plans if we have sample data, even if API fails
+  // Show error state if no plans available
   if (!plans || plans.length === 0) {
     return (
-      <section id="plans" className="py-16 bg-gray-50">
+      <section id="plans" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Investment Plans</h2>
+            <h2 className="text-3xl font-bold mb-4">Planos de Investimento</h2>
             <div className="flex items-center justify-center gap-2 text-red-500">
               <AlertCircle size={20} />
-              <p>Unable to load investment plans. Please try again later.</p>
+              <p>Não foi possível carregar os planos de investimento. Tente novamente mais tarde.</p>
             </div>
           </div>
         </div>
@@ -154,7 +152,7 @@ export default function InvestmentPlans() {
   }
 
   return (
-    <section id="plans" className="py-16 bg-gray-50">
+    <section id="plans" className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">Planos de Investimento</h2>
@@ -204,7 +202,7 @@ export default function InvestmentPlans() {
                         {plan.name}
                       </CardTitle>
                       <span className={`text-xs px-2 py-1 rounded-full ${getRiskLevelColor(plan.riskLevel)}`}>
-                        {plan.riskLevel.charAt(0).toUpperCase() + plan.riskLevel.slice(1)} Risk
+                        {translateRiskLevel(plan.riskLevel)}
                       </span>
                     </div>
                     <CardDescription>
@@ -275,7 +273,7 @@ export default function InvestmentPlans() {
                           {plan.name}
                         </CardTitle>
                         <span className={`text-xs px-2 py-1 rounded-full ${getRiskLevelColor(plan.riskLevel)}`}>
-                          {plan.riskLevel.charAt(0).toUpperCase() + plan.riskLevel.slice(1)} Risk
+                          {translateRiskLevel(plan.riskLevel)}
                         </span>
                       </div>
                       <CardDescription>
@@ -355,7 +353,7 @@ export default function InvestmentPlans() {
                           {plan.name}
                         </CardTitle>
                         <span className={`text-xs px-2 py-1 rounded-full ${getRiskLevelColor(plan.riskLevel)}`}>
-                          {plan.riskLevel.charAt(0).toUpperCase() + plan.riskLevel.slice(1)} Risk
+                          {translateRiskLevel(plan.riskLevel)}
                         </span>
                       </div>
                       <CardDescription>
