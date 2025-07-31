@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Coins, CheckCircle, Shield, TrendingUp, AlertCircle, Bitcoin, Building, Cpu } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { InvestmentPlan } from "@shared/schema";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
-import { sampleInvestmentPlans } from "@/data/sample-investment-plans";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { InvestmentPlan } from "../../../shared/schema";
+import { Skeleton } from "../ui/skeleton";
+import { useToast } from "../../hooks/use-toast";
+import { sampleInvestmentPlans } from "../../data/sample-investment-plans";
 
 export default function InvestmentPlans() {
   const { toast } = useToast();
