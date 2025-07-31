@@ -22,6 +22,13 @@ export default function InvestmentPlans() {
 
   // Use sample data if API fails or returns empty data
   const plans = apiPlans && apiPlans.length > 0 ? apiPlans : sampleInvestmentPlans as InvestmentPlan[];
+  
+  // Debug logging
+  console.log('API Plans:', apiPlans);
+  console.log('Is Loading:', isLoading);
+  console.log('Is Error:', isError);
+  console.log('Final Plans:', plans);
+  console.log('Sample Plans:', sampleInvestmentPlans);
 
   // Function to handle plan selection
   const handlePlanSelection = (planId: number) => {
@@ -120,8 +127,8 @@ export default function InvestmentPlans() {
     );
   }
 
-  // Show error state only if both API and sample data fail
-  if (isError && (!plans || plans.length === 0)) {
+  // Always show plans if we have sample data, even if API fails
+  if (!plans || plans.length === 0) {
     return (
       <section id="plans" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
