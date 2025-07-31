@@ -42,6 +42,7 @@ export const investmentPlans = pgTable("investment_plans", {
   monthlyReturnRate: decimal("monthly_return_rate", { precision: 5, scale: 2 }).notNull(),
   durationMonths: integer("duration_months").notNull(),
   riskLevel: varchar("risk_level", { length: 20 }).notNull(),
+  fundType: varchar("fund_type", { length: 50 }).notNull().default("crypto"),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

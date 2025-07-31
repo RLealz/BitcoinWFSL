@@ -128,7 +128,7 @@ export class DatabaseStorage implements IStorage {
   async createUserProfile(profile: InsertUserProfile & { userId: number }): Promise<UserProfile> {
     const [userProfile] = await db
       .insert(userProfiles)
-      .values(profile)
+      .values([profile])
       .returning();
     
     // Mark user's profile as completed
@@ -141,9 +141,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserProfile(userId: number, profileData: Partial<InsertUserProfile>): Promise<UserProfile | undefined> {
+    const updateData = { ...profileData, updatedAt: new Date() };
+    // Convert number types to strings for decimal fields
+    if (updateData.monthlyInvestmentBudget !== undefined) {
+      updateData.monthlyInvestmentBudget = updateData.monthlyInvestmentBudget?.toString() as any;
+    }
     const [profile] = await db
       .update(userProfiles)
-      .set({ ...profileData, updatedAt: new Date() })
+      .set(updateData)
       .where(eq(userProfiles.userId, userId))
       .returning();
     return profile;
@@ -169,17 +174,31 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createInvestmentPlan(plan: InsertInvestmentPlan): Promise<InvestmentPlan> {
+    // Convert number types to strings for decimal fields
+    const planData = {
+      ...plan,
+      minimumInvestment: plan.minimumInvestment?.toString(),
+      monthlyReturnRate: plan.monthlyReturnRate?.toString()
+    };
     const [investmentPlan] = await db
       .insert(investmentPlans)
-      .values(plan)
+      .values([planData])
       .returning();
     return investmentPlan;
   }
 
   async updateInvestmentPlan(id: number, planData: Partial<InsertInvestmentPlan>): Promise<InvestmentPlan | undefined> {
+    const updateData = { ...planData, updatedAt: new Date() };
+    // Convert number types to strings for decimal fields
+    if (updateData.minimumInvestment !== undefined) {
+      updateData.minimumInvestment = updateData.minimumInvestment?.toString() as any;
+    }
+    if (updateData.monthlyReturnRate !== undefined) {
+      updateData.monthlyReturnRate = updateData.monthlyReturnRate?.toString() as any;
+    }
     const [plan] = await db
       .update(investmentPlans)
-      .set({ ...planData, updatedAt: new Date() })
+      .set(updateData)
       .where(eq(investmentPlans.id, id))
       .returning();
     return plan;

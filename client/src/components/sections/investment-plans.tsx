@@ -7,17 +7,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InvestmentPlan } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { sampleInvestmentPlans } from "@/data/sample-investment-plans";
 
 export default function InvestmentPlans() {
   const { toast } = useToast();
   const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState("crypto");
 
-  // Fetch investment plans from the API
-  const { data: plans, isLoading, isError } = useQuery<InvestmentPlan[]>({
+  // Fetch investment plans from the API with fallback to sample data
+  const { data: apiPlans, isLoading, isError } = useQuery<InvestmentPlan[]>({
     queryKey: ["/api/investment-plans"],
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
+
+  // Use sample data if API fails or returns empty data
+  const plans = apiPlans && apiPlans.length > 0 ? apiPlans : sampleInvestmentPlans as InvestmentPlan[];
 
   // Function to handle plan selection
   const handlePlanSelection = (planId: number) => {
@@ -75,7 +79,10 @@ export default function InvestmentPlans() {
   // Filter plans by fund type
   const filterPlansByType = (fundType: string) => {
     if (!plans) return [];
-    return plans.filter(plan => (plan as any).fundType === fundType || (!plan.hasOwnProperty('fundType') && fundType === 'crypto'));
+    return plans.filter(plan => {
+      const planFundType = (plan as any).fundType || 'crypto';
+      return planFundType === fundType;
+    });
   };
 
   // Show loading state
@@ -113,8 +120,8 @@ export default function InvestmentPlans() {
     );
   }
 
-  // Show error state
-  if (isError || !plans) {
+  // Show error state only if both API and sample data fail
+  if (isError && (!plans || plans.length === 0)) {
     return (
       <section id="plans" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
