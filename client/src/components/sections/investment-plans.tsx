@@ -102,11 +102,11 @@ export default function InvestmentPlans() {
   // Show loading state
   if (isLoading) {
     return (
-      <section id="plans" className="py-16 bg-white">
+      <section id="plans" className="py-16 gradient-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Planos de Investimento</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-[#FFD700]">Planos de Investimento</h2>
+            <p className="text-white max-w-2xl mx-auto">
               A carregar as opções de investimento...
             </p>
           </div>
@@ -137,10 +137,10 @@ export default function InvestmentPlans() {
   // Show error state if no plans available
   if (!plans || plans.length === 0) {
     return (
-      <section id="plans" className="py-16 bg-white">
+      <section id="plans" className="py-16 gradient-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Planos de Investimento</h2>
+            <h2 className="text-3xl font-bold mb-4 text-[#FFD700]">Planos de Investimento</h2>
             <div className="flex items-center justify-center gap-2 text-red-500">
               <AlertCircle size={20} />
               <p>Não foi possível carregar os planos de investimento. Tente novamente mais tarde.</p>
@@ -152,11 +152,11 @@ export default function InvestmentPlans() {
   }
 
   return (
-    <section id="plans" className="py-16 bg-white">
+    <section id="plans" className="py-16 gradient-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">Planos de Investimento</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold mb-4 text-[#FFD700]">Planos de Investimento</h2>
+          <p className="text-white max-w-2xl mx-auto">
             Escolha o fundo de investimento que combina com seus objetivos financeiros e tolerância ao risco. 
             Nossas opções diversificadas oferecem diferentes retornos baseados em duração e nível de risco.
           </p>
@@ -182,8 +182,8 @@ export default function InvestmentPlans() {
           {/* Crypto-assets Tab */}
           <TabsContent value="crypto">
             <div className="text-center mb-8">
-              <h3 className="text-xl font-semibold mb-2">Fundo de Investimento de Cripto-ativos</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-[#FFD700]">Fundo de Investimento de Cripto-ativos</h3>
+              <p className="text-white">
                 Invista em uma carteira diversificada de criptomoedas com estratégias de baixo a alto risco.
               </p>
             </div>
@@ -252,8 +252,8 @@ export default function InvestmentPlans() {
           {/* Real Estate Tab */}
           <TabsContent value="real-estate">
             <div className="text-center mb-8">
-              <h3 className="text-xl font-semibold mb-2">Fundo de Investimento Imobiliário</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-[#FFD700]">Fundo de Investimento Imobiliário</h3>
+              <p className="text-white">
                 Invista em propriedades comerciais e residenciais com retornos estáveis e crescimento a longo prazo.
               </p>
             </div>
@@ -320,8 +320,8 @@ export default function InvestmentPlans() {
               ) : (
                 <div className="col-span-3 text-center py-12">
                   <Building className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2 text-gray-600">Em Breve</h3>
-                  <p className="text-gray-500">
+                  <h3 className="text-lg font-medium mb-2 text-[#FFD700]">Em Breve</h3>
+                  <p className="text-white">
                     Novos planos de investimento imobiliário estarão disponíveis em breve.
                   </p>
                 </div>
@@ -332,8 +332,8 @@ export default function InvestmentPlans() {
           {/* Emerging Technologies Tab */}
           <TabsContent value="emerging-tech">
             <div className="text-center mb-8">
-              <h3 className="text-xl font-semibold mb-2">Fundo de Investimento de Tecnologias Emergentes</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-[#FFD700]">Fundo de Investimento de Tecnologias Emergentes</h3>
+              <p className="text-white">
                 Invista nas tecnologias do futuro: IA, blockchain, IoT e outras inovações disruptivas.
               </p>
             </div>
@@ -400,8 +400,8 @@ export default function InvestmentPlans() {
               ) : (
                 <div className="col-span-3 text-center py-12">
                   <Cpu className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2 text-gray-600">Em Breve</h3>
-                  <p className="text-gray-500">
+                  <h3 className="text-lg font-medium mb-2 text-[#FFD700]">Em Breve</h3>
+                  <p className="text-white">
                     Novos planos de investimento em tecnologias emergentes estarão disponíveis em breve.
                   </p>
                 </div>
