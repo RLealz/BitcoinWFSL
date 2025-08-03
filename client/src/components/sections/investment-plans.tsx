@@ -158,7 +158,7 @@ export default function InvestmentPlans() {
           <h2 className="text-3xl font-bold mb-4 text-[#FFD700]">Planos de Investimento</h2>
           <p className="text-white max-w-2xl mx-auto">
             Escolha o fundo de investimento que combina com seus objetivos financeiros e tolerância ao risco. 
-            Nossas opções diversificadas oferecem diferentes retornos baseados em duração e nível de risco.
+            As Nossas opções diversificadas oferecem diferentes retornos baseados em duração e nível de risco.
           </p>
         </div>
         
@@ -415,10 +415,10 @@ export default function InvestmentPlans() {
           <div className="flex items-start gap-3">
             <Shield className="h-6 w-6 text-amber-500 mt-1 flex-shrink-0" />
             <div>
-              <h3 className="font-medium text-amber-800">Investment Risk Disclosure</h3>
+              <h3 className="font-medium text-amber-800">Divulgação de Risco de Investimento</h3>
               <p className="text-sm text-amber-700 mt-1">
-                All investments involve risk and may result in loss. Past performance is not indicative of future results.
-                Please consider your financial situation and risk tolerance before investing.
+                Todos os investimentos envolvem risco e podem resultar em perdas. O desempenho passado não é indicativo de resultados futuros.
+                Por favor, considere a sua situação financeira e tolerância ao risco antes de investir.
               </p>
             </div>
           </div>
