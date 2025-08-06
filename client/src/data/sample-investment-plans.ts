@@ -2,14 +2,14 @@
 // This will be used as fallback data to show the different fund types
 
 export const sampleInvestmentPlans = [
-  // Crypto Plans (existing + samples)
+  // Crypto Plans - Planos atualizados
   {
     id: 1,
-    name: 'Conservative Plan',
-    description: 'Low-risk investment with stable returns. Perfect for beginners or risk-averse investors.',
+    name: 'Plano Bronze',
+    description: 'Plano de entrada com investimento acessível e retornos estáveis. Ideal para iniciantes.',
     minimumInvestment: '1000.00',
-    monthlyReturnRate: '0.50',
-    durationMonths: 6,
+    monthlyReturnRate: '4.17',
+    durationMonths: 12,
     riskLevel: 'low',
     fundType: 'crypto',
     isActive: true,
@@ -18,10 +18,10 @@ export const sampleInvestmentPlans = [
   },
   {
     id: 2,
-    name: 'Balanced Growth',
-    description: 'Medium-risk investment balancing stability and growth. Ideal for intermediate investors.',
-    minimumInvestment: '5000.00',
-    monthlyReturnRate: '1.20',
+    name: 'Plano Prata',
+    description: 'Plano intermédio com equilíbrio entre risco e retorno. Para investidores com experiência.',
+    minimumInvestment: '1500.00',
+    monthlyReturnRate: '6.25',
     durationMonths: 12,
     riskLevel: 'medium',
     fundType: 'crypto',
@@ -31,11 +31,11 @@ export const sampleInvestmentPlans = [
   },
   {
     id: 3,
-    name: 'Aggressive Growth',
-    description: 'Higher-risk investment strategy focusing on maximum returns. For experienced investors.',
-    minimumInvestment: '10000.00',
-    monthlyReturnRate: '2.50',
-    durationMonths: 18,
+    name: 'Plano Ouro',
+    description: 'Plano premium com os maiores retornos. Para investidores experientes e com maior tolerância ao risco.',
+    minimumInvestment: '3000.00',
+    monthlyReturnRate: '8.33',
+    durationMonths: 12,
     riskLevel: 'high',
     fundType: 'crypto',
     isActive: true,
