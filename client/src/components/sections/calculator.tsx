@@ -11,46 +11,69 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Investment tiers and their monthly return rates
+// Investment tiers and their monthly return rates - Novos planos atualizados
 const INVESTMENT_TIERS = {
-  BRONZE: { min: 1000, minReturn: 0.10, maxReturn: 0.18 }, // 10-18% monthly return
-  SILVER: { min: 2500, minReturn: 0.10, maxReturn: 0.14 }, // 10-14% monthly return
-  GOLD: { min: 5000, minReturn: 0.10, maxReturn: 0.15 }, // 10-15% monthly return
-  DIAMOND: { min: 10000, minReturn: 0.10, maxReturn: 0.15 }, // 10-15% monthly return
+  BRONZE: { min: 1000, monthlyReturn: 0.0417, name: 'Bronze' }, // 4.17% mensal (50% APY)
+  SILVER: { min: 1500, monthlyReturn: 0.0625, name: 'Prata' }, // 6.25% mensal (75% APY)  
+  GOLD: { min: 3000, monthlyReturn: 0.0833, name: 'Ouro' }, // 8.33% mensal (100% APY)
 };
 
 export default function Calculator() {
   const [initialInvestment, setInitialInvestment] = useState<string>("");
-  const [months, setMonths] = useState<string>("6");
+  const [months, setMonths] = useState<string>("12");
 
   // Calculate projected returns
   const calculateReturns = () => {
     const investment = parseFloat(initialInvestment) || 0;
-    const duration = parseInt(months) || 6;
+    const duration = parseInt(months) || 12;
 
     // Determine the tier
-    let tier;
-    if (investment >= INVESTMENT_TIERS.DIAMOND.min) tier = INVESTMENT_TIERS.DIAMOND;
-    else if (investment >= INVESTMENT_TIERS.GOLD.min) tier = INVESTMENT_TIERS.GOLD;
-    else if (investment >= INVESTMENT_TIERS.SILVER.min) tier = INVESTMENT_TIERS.SILVER;
-    else if (investment >= INVESTMENT_TIERS.BRONZE.min) tier = INVESTMENT_TIERS.BRONZE;
-    else return { min: investment, max: investment };
+    let tier = null;
+    let tierName = '';
+    
+    if (investment >= INVESTMENT_TIERS.GOLD.min) {
+      tier = INVESTMENT_TIERS.GOLD;
+      tierName = 'Ouro';
+    } else if (investment >= INVESTMENT_TIERS.SILVER.min) {
+      tier = INVESTMENT_TIERS.SILVER;
+      tierName = 'Prata';
+    } else if (investment >= INVESTMENT_TIERS.BRONZE.min) {
+      tier = INVESTMENT_TIERS.BRONZE;
+      tierName = 'Bronze';
+    } else {
+      return { 
+        totalReturn: investment, 
+        monthlyProfit: 0, 
+        totalProfit: 0, 
+        tierName: 'Investimento insuficiente',
+        isValid: false
+      };
+    }
 
-    // Calculate returns (non-compound)
-    const minMonthlyReturn = investment * tier.minReturn;
-    const maxMonthlyReturn = investment * tier.maxReturn;
-
-    // Total return = (Monthly Return × Number of Months) + Initial Investment
-    const minTotal = (minMonthlyReturn * duration) + investment;
-    const maxTotal = (maxMonthlyReturn * duration) + investment;
+    // Calculate monthly profit
+    const monthlyProfit = investment * tier.monthlyReturn;
+    const totalProfit = monthlyProfit * duration;
+    const totalReturn = investment + totalProfit;
 
     return {
-      min: minTotal,
-      max: maxTotal
+      totalReturn,
+      monthlyProfit,
+      totalProfit,
+      tierName,
+      isValid: true
     };
   };
 
   const returns = calculateReturns();
+  
+  // Ensure returns has all necessary properties
+  const safeReturns = returns || {
+    totalReturn: 0,
+    monthlyProfit: 0,
+    totalProfit: 0,
+    tierName: 'Investimento insuficiente',
+    isValid: false
+  };
 
   return (
     <section className="py-24 gradient-background">
@@ -88,7 +111,7 @@ export default function Calculator() {
                       <SelectValue placeholder="Selecione o período" />
                     </SelectTrigger>
                     <SelectContent>
-                      {[6, 8, 12].map((month) => (
+                      {[6, 12, 18, 24].map((month) => (
                         <SelectItem key={month} value={month.toString()}>
                           {month} Meses
                         </SelectItem>
@@ -98,29 +121,54 @@ export default function Calculator() {
                 </div>
               </div>
 
-              <div className="mt-8 space-y-4">
-                <h3 className="text-xl font-semibold text-white">Projeção de Retorno Total</h3>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="p-4 rounded-lg bg-black/30 border border-white/10">
-                    <p className="text-sm text-white/80 mb-2">Retorno Mínimo Total</p>
-                    <p className="text-2xl font-bold text-white">
-                      {returns.min.toLocaleString('pt-PT', {
-                        style: 'currency',
-                        currency: 'EUR'
-                      })}
-                    </p>
+              {safeReturns.isValid ? (
+                <div className="mt-8 space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <h3 className="text-xl font-semibold text-white">Projeção de Investimento</h3>
+                    <span className="px-3 py-1 bg-[#FFD700]/20 text-[#FFD700] rounded-full text-sm font-medium">
+                      Plano {safeReturns.tierName}
+                    </span>
                   </div>
-                  <div className="p-4 rounded-lg bg-black/30 border border-white/10">
-                    <p className="text-sm text-white/80 mb-2">Retorno Máximo Total</p>
-                    <p className="text-2xl font-bold text-white">
-                      {returns.max.toLocaleString('pt-PT', {
-                        style: 'currency',
-                        currency: 'EUR'
-                      })}
-                    </p>
+                  
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="p-4 rounded-lg bg-black/30 border border-white/10">
+                      <p className="text-sm text-white/80 mb-2">Lucro Mensal</p>
+                      <p className="text-xl font-bold text-green-400">
+                        {safeReturns.monthlyProfit.toLocaleString('pt-PT', {
+                          style: 'currency',
+                          currency: 'EUR'
+                        })}
+                      </p>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg bg-black/30 border border-white/10">
+                      <p className="text-sm text-white/80 mb-2">Lucro Total</p>
+                      <p className="text-xl font-bold text-green-400">
+                        {safeReturns.totalProfit.toLocaleString('pt-PT', {
+                          style: 'currency',
+                          currency: 'EUR'
+                        })}
+                      </p>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg bg-black/30 border border-white/10">
+                      <p className="text-sm text-white/80 mb-2">Total com Capital</p>
+                      <p className="text-2xl font-bold text-[#FFD700]">
+                        {safeReturns.totalReturn.toLocaleString('pt-PT', {
+                          style: 'currency',
+                          currency: 'EUR'
+                        })}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-8 p-4 rounded-lg bg-red-900/20 border border-red-500/20">
+                  <p className="text-red-400 text-center">
+                    Investimento mínimo: €1.000 (Plano Bronze)
+                  </p>
+                </div>
+              )}
 
               <p className="text-sm text-white/60 mt-4">
                 * As projeções incluem o investimento inicial e são baseadas em retornos históricos.
