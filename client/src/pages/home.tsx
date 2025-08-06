@@ -1,7 +1,7 @@
 import Hero from "../components/sections/hero";
 import Features from "../components/sections/features";
 import Benefits from "../components/sections/benefits";
-import InvestmentPlans from "../components/sections/investment-plans";
+// import InvestmentPlans from "../components/sections/investment-plans"; // Desativado temporariamente
 import Calculator from "../components/sections/calculator";
 import Team from "../components/sections/team";
 import CTA from "../components/sections/cta";
@@ -13,7 +13,7 @@ export default function Home() {
       <Hero />
       <Features />
       <Benefits />
-      <InvestmentPlans />
+      {/* <InvestmentPlans /> */} {/* Secção desativada temporariamente */}
       <Calculator />
       <Team />
       <CTA />
