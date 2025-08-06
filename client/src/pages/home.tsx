@@ -1,6 +1,5 @@
 import Hero from "../components/sections/hero";
 import Features from "../components/sections/features";
-import Benefits from "../components/sections/benefits";
 import InvestmentPlans from "../components/sections/investment-plans";
 import Calculator from "../components/sections/calculator";
 import Team from "../components/sections/team";
@@ -12,7 +11,6 @@ export default function Home() {
     <div className="min-h-screen">
       <Hero />
       <Features />
-      <Benefits />
       <InvestmentPlans />
       <Calculator />
       <Team />
