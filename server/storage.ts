@@ -4,7 +4,7 @@ import {
   userProfiles, 
   investmentPlans,
   type User, 
-  type InsertUser, 
+  type UpsertUser, 
   type Lead, 
   type InsertLead,
   type UserProfile,
@@ -13,111 +13,74 @@ import {
   type InsertInvestmentPlan
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
-import session from "express-session";
-import connectPg from "connect-pg-simple";
-import { pool } from "./db";
-
-const PostgresSessionStore = connectPg(session);
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  // Lead management
-  createLead(lead: InsertLead): Promise<Lead>;
-  getLeadById(id: number): Promise<Lead | undefined>;
-  getLeadByEmail(email: string): Promise<Lead | undefined>;
-  markLeadAsConverted(id: number): Promise<Lead | undefined>;
-  
-  // User management
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  getUserByEmail(email: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-  updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined>;
+  // User operations
+  // (IMPORTANT) these user operations are mandatory for Replit Auth.
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   // User profile management
-  getUserProfile(userId: number): Promise<UserProfile | undefined>;
-  createUserProfile(profile: InsertUserProfile & { userId: number }): Promise<UserProfile>;
-  updateUserProfile(userId: number, profileData: Partial<InsertUserProfile>): Promise<UserProfile | undefined>;
+  getUserProfile(userId: string): Promise<UserProfile | undefined>;
+  createUserProfile(profile: InsertUserProfile): Promise<UserProfile>;
+  updateUserProfile(userId: string, profileData: Partial<InsertUserProfile>): Promise<UserProfile | undefined>;
   
   // Investment plan management
-  getInvestmentPlans(activeOnly?: boolean): Promise<InvestmentPlan[]>;
-  getInvestmentPlanById(id: number): Promise<InvestmentPlan | undefined>;
+  getAllInvestmentPlans(): Promise<InvestmentPlan[]>;
+  getInvestmentPlan(id: number): Promise<InvestmentPlan | undefined>;
   createInvestmentPlan(plan: InsertInvestmentPlan): Promise<InvestmentPlan>;
-  updateInvestmentPlan(id: number, planData: Partial<InsertInvestmentPlan>): Promise<InvestmentPlan | undefined>;
   
-  // Session store
-  sessionStore: session.Store;
+  // Lead management
+  createLead(lead: InsertLead): Promise<Lead>;
+  getAllLeads(): Promise<Lead[]>;
+  markLeadAsConverted(leadId: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.Store;
 
-  constructor() {
-    this.sessionStore = new PostgresSessionStore({
-      pool,
-      createTableIfMissing: true,
-    });
-  }
+  // User operations
+  // (IMPORTANT) these user operations are mandatory for Replit Auth.
 
-  // Lead management methods
-  async createLead(insertLead: InsertLead): Promise<Lead> {
-    console.log("Creating new lead in database...");
-    const [lead] = await db.insert(leads).values(insertLead).returning();
-    console.log(`Lead created with ID: ${lead.id}`);
-    return lead;
-  }
-
-  async getLeadById(id: number): Promise<Lead | undefined> {
-    const [lead] = await db.select().from(leads).where(eq(leads.id, id));
-    return lead;
-  }
-
-  async getLeadByEmail(email: string): Promise<Lead | undefined> {
-    const [lead] = await db.select().from(leads).where(eq(leads.email, email));
-    return lead;
-  }
-
-  async markLeadAsConverted(id: number): Promise<Lead | undefined> {
-    const [lead] = await db
-      .update(leads)
-      .set({ convertedToUser: true })
-      .where(eq(leads.id, id))
-      .returning();
-    return lead;
-  }
-
-  // User management methods
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user;
-  }
-
-  async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
-  }
-
-  async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
-    const [updatedUser] = await db
-      .update(users)
-      .set({ ...userData, updatedAt: new Date() })
-      .where(eq(users.id, id))
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
-    return updatedUser;
+    return user;
   }
 
-  // User profile management methods
-  async getUserProfile(userId: number): Promise<UserProfile | undefined> {
+  // User profile operations
+  async createUserProfile(insertProfile: InsertUserProfile): Promise<UserProfile> {
+    const [profile] = await db
+      .insert(userProfiles)
+      .values(insertProfile)
+      .returning();
+    return profile;
+  }
+
+  async updateUserProfile(userId: string, updateData: Partial<InsertUserProfile>): Promise<UserProfile | undefined> {
+    const [profile] = await db
+      .update(userProfiles)
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(userProfiles.userId, userId))
+      .returning();
+    return profile;
+  }
+
+  async getUserProfile(userId: string): Promise<UserProfile | undefined> {
     const [profile] = await db
       .select()
       .from(userProfiles)
@@ -125,47 +88,15 @@ export class DatabaseStorage implements IStorage {
     return profile;
   }
 
-  async createUserProfile(profile: InsertUserProfile & { userId: number }): Promise<UserProfile> {
-    const [userProfile] = await db
-      .insert(userProfiles)
-      .values([profile])
-      .returning();
-    
-    // Mark user's profile as completed
-    await db
-      .update(users)
-      .set({ profileCompleted: true, updatedAt: new Date() })
-      .where(eq(users.id, profile.userId));
-      
-    return userProfile;
+  // Investment plan operations
+  async getAllInvestmentPlans(): Promise<InvestmentPlan[]> {
+    return await db
+      .select()
+      .from(investmentPlans)
+      .where(eq(investmentPlans.isActive, true));
   }
 
-  async updateUserProfile(userId: number, profileData: Partial<InsertUserProfile>): Promise<UserProfile | undefined> {
-    const updateData = { ...profileData, updatedAt: new Date() };
-    // Convert number types to strings for decimal fields
-    if (updateData.monthlyInvestmentBudget !== undefined) {
-      updateData.monthlyInvestmentBudget = updateData.monthlyInvestmentBudget?.toString() as any;
-    }
-    const [profile] = await db
-      .update(userProfiles)
-      .set(updateData)
-      .where(eq(userProfiles.userId, userId))
-      .returning();
-    return profile;
-  }
-
-  // Investment plan management methods
-  async getInvestmentPlans(activeOnly = true): Promise<InvestmentPlan[]> {
-    if (activeOnly) {
-      return db
-        .select()
-        .from(investmentPlans)
-        .where(eq(investmentPlans.isActive, true));
-    }
-    return db.select().from(investmentPlans);
-  }
-
-  async getInvestmentPlanById(id: number): Promise<InvestmentPlan | undefined> {
+  async getInvestmentPlan(id: number): Promise<InvestmentPlan | undefined> {
     const [plan] = await db
       .select()
       .from(investmentPlans)
@@ -173,35 +104,32 @@ export class DatabaseStorage implements IStorage {
     return plan;
   }
 
-  async createInvestmentPlan(plan: InsertInvestmentPlan): Promise<InvestmentPlan> {
-    // Convert number types to strings for decimal fields
-    const planData = {
-      ...plan,
-      minimumInvestment: plan.minimumInvestment?.toString(),
-      monthlyReturnRate: plan.monthlyReturnRate?.toString()
-    };
-    const [investmentPlan] = await db
-      .insert(investmentPlans)
-      .values([planData])
-      .returning();
-    return investmentPlan;
-  }
-
-  async updateInvestmentPlan(id: number, planData: Partial<InsertInvestmentPlan>): Promise<InvestmentPlan | undefined> {
-    const updateData = { ...planData, updatedAt: new Date() };
-    // Convert number types to strings for decimal fields
-    if (updateData.minimumInvestment !== undefined) {
-      updateData.minimumInvestment = updateData.minimumInvestment?.toString() as any;
-    }
-    if (updateData.monthlyReturnRate !== undefined) {
-      updateData.monthlyReturnRate = updateData.monthlyReturnRate?.toString() as any;
-    }
+  async createInvestmentPlan(insertPlan: InsertInvestmentPlan): Promise<InvestmentPlan> {
     const [plan] = await db
-      .update(investmentPlans)
-      .set(updateData)
-      .where(eq(investmentPlans.id, id))
+      .insert(investmentPlans)
+      .values(insertPlan)
       .returning();
     return plan;
+  }
+
+  // Lead operations
+  async createLead(insertLead: InsertLead): Promise<Lead> {
+    const [lead] = await db
+      .insert(leads)
+      .values(insertLead)
+      .returning();
+    return lead;
+  }
+
+  async getAllLeads(): Promise<Lead[]> {
+    return await db.select().from(leads);
+  }
+
+  async markLeadAsConverted(leadId: number): Promise<void> {
+    await db
+      .update(leads)
+      .set({ convertedToUser: true, updatedAt: new Date() })
+      .where(eq(leads.id, leadId));
   }
 }
 

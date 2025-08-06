@@ -64,20 +64,22 @@ export default function Header() {
                     Profile
                   </Button>
                 </Link>
-                {user.isAdmin && (
-                  <Link href="/admin">
-                    <Button variant="ghost" className="text-white hover:text-[#FFD700]">
-                      Admin
-                    </Button>
-                  </Link>
-                )}
+                <Button
+                  onClick={() => window.location.href = '/api/logout'}
+                  variant="ghost"
+                  className="text-white hover:text-[#FFD700]"
+                >
+                  Sair
+                </Button>
               </div>
             ) : (
-              <Link href="/auth">
-                <Button variant="outline" className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black">
-                  Login
-                </Button>
-              </Link>
+              <Button
+                onClick={() => window.location.href = '/api/login'}
+                variant="outline"
+                className="border-[#FFD700] text-[#FFD700] hover:bg-[#FFD700] hover:text-black"
+              >
+                Login
+              </Button>
             )}
           </div>
         </div>

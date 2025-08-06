@@ -1,17 +1,40 @@
 
-import { pgTable, text, serial, timestamp, varchar, boolean, integer, decimal } from "drizzle-orm/pg-core";
+import { sql } from 'drizzle-orm';
+import {
+  index,
+  jsonb,
+  pgTable,
+  timestamp,
+  varchar,
+  text,
+  serial,
+  boolean,
+  integer,
+  decimal,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Users table for authentication and profiles
+// Session storage table.
+// (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// User storage table.
+// (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: varchar("username", { length: 255 }).notNull().unique(),
-  password: varchar("password", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  fullName: varchar("full_name", { length: 255 }),
-  isAdmin: boolean("is_admin").default(false),
-  profileCompleted: boolean("profile_completed").default(false),
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -19,7 +42,7 @@ export const users = pgTable("users", {
 // User Profiles with additional information
 export const userProfiles = pgTable("user_profiles", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
   phone: varchar("phone", { length: 20 }),
   country: varchar("country", { length: 100 }),
   preferredLanguage: varchar("preferred_language", { length: 50 }).default("en"),
@@ -61,16 +84,11 @@ export const leads = pgTable("leads", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Schema for user insertion
-export const insertUserSchema = createInsertSchema(users, {
-  email: z.string().email("Please enter a valid email address"),
-  fullName: z.string().optional(),
-  isAdmin: z.boolean().optional(),
-})
-.extend({
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  username: z.string().min(3, "Username must be at least 3 characters"),
-})
+// Schema for user insertion - Updated for Replit Auth
+export const insertUserSchema = createInsertSchema(users)
+.omit({ createdAt: true, updatedAt: true });
+
+export const upsertUserSchema = createInsertSchema(users)
 .omit({ createdAt: true, updatedAt: true });
 
 // Schema for user profile insertion
@@ -114,8 +132,9 @@ export const insertLeadSchema = createInsertSchema(leads, {
   convertedToUser: true 
 });
 
-// Types
+// Types - Updated for Replit Auth
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertUserProfile = z.infer<typeof insertUserProfileSchema>;
 export type UserProfile = typeof userProfiles.$inferSelect;

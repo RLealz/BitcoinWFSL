@@ -5,7 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { ThemeProvider } from "@/lib/theme-provider";
+import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/home";
+import Landing from "@/pages/landing";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth";
 import DashboardPage from "@/pages/dashboard";
@@ -15,13 +17,21 @@ import Header from "@/components/sections/header";
 import Footer from "@/components/sections/footer";
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      {isLoading || !isAuthenticated ? (
+        <Route path="/" component={Landing} />
+      ) : (
+        <>
+          <Route path="/" component={Home} />
+          <ProtectedRoute path="/dashboard" component={DashboardPage} />
+          <ProtectedRoute path="/profile" component={ProfilePage} />
+          <ProtectedRoute path="/admin" component={AdminDashboard} />
+        </>
+      )}
       <Route path="/auth" component={AuthPage} />
-      <ProtectedRoute path="/dashboard" component={DashboardPage} />
-      <ProtectedRoute path="/profile" component={ProfilePage} />
-      <ProtectedRoute path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
