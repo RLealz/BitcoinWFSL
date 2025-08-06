@@ -13,9 +13,9 @@ import {
 
 // Investment tiers and their monthly return rates - Novos planos atualizados
 const INVESTMENT_TIERS = {
-  BRONZE: { min: 1000, monthlyReturn: 0.0417, name: 'Bronze' }, // 4.17% mensal (50% APY)
-  SILVER: { min: 1500, monthlyReturn: 0.0625, name: 'Prata' }, // 6.25% mensal (75% APY)  
-  GOLD: { min: 3000, monthlyReturn: 0.0833, name: 'Ouro' }, // 8.33% mensal (100% APY)
+  BRONZE: { min: 1000, max: 2499, monthlyReturn: 0.0417, name: 'Bronze' }, // €1000-2499, 4.17% mensal (50% APY)
+  SILVER: { min: 2500, max: 4999, monthlyReturn: 0.0625, name: 'Prata' }, // €2500-4999, 6.25% mensal (75% APY)  
+  GOLD: { min: 5000, max: 10000, monthlyReturn: 0.0833, name: 'Ouro' }, // €5000-10000, 8.33% mensal (100% APY)
 };
 
 export default function Calculator() {
@@ -27,19 +27,23 @@ export default function Calculator() {
     const investment = parseFloat(initialInvestment) || 0;
     const duration = parseInt(months) || 12;
 
-    // Determine the tier
+    // Determine the tier based on investment amount ranges
     let tier = null;
     let tierName = '';
     
-    if (investment >= INVESTMENT_TIERS.GOLD.min) {
+    if (investment >= INVESTMENT_TIERS.GOLD.min && investment <= INVESTMENT_TIERS.GOLD.max) {
       tier = INVESTMENT_TIERS.GOLD;
       tierName = 'Ouro';
-    } else if (investment >= INVESTMENT_TIERS.SILVER.min) {
+    } else if (investment >= INVESTMENT_TIERS.SILVER.min && investment <= INVESTMENT_TIERS.SILVER.max) {
       tier = INVESTMENT_TIERS.SILVER;
       tierName = 'Prata';
-    } else if (investment >= INVESTMENT_TIERS.BRONZE.min) {
+    } else if (investment >= INVESTMENT_TIERS.BRONZE.min && investment <= INVESTMENT_TIERS.BRONZE.max) {
       tier = INVESTMENT_TIERS.BRONZE;
       tierName = 'Bronze';
+    } else if (investment > INVESTMENT_TIERS.GOLD.max) {
+      // For investments above €10,000, use the Gold tier rate
+      tier = INVESTMENT_TIERS.GOLD;
+      tierName = 'Ouro (Premium)';
     } else {
       return { 
         totalReturn: investment, 
@@ -111,7 +115,7 @@ export default function Calculator() {
                       <SelectValue placeholder="Selecione o período" />
                     </SelectTrigger>
                     <SelectContent>
-                      {[6, 12, 18, 24].map((month) => (
+                      {[12, 18, 24].map((month) => (
                         <SelectItem key={month} value={month.toString()}>
                           {month} Meses
                         </SelectItem>
@@ -167,6 +171,9 @@ export default function Calculator() {
                   <p className="text-red-400 text-center">
                     Investimento mínimo: €1.000 (Plano Bronze)
                   </p>
+                  <div className="mt-3 text-sm text-white/60 text-center">
+                    Bronze: €1.000 - €2.499 | Prata: €2.500 - €4.999 | Ouro: €5.000 - €10.000
+                  </div>
                 </div>
               )}
 
