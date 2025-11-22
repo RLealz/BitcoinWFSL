@@ -1,84 +1,110 @@
-import React from 'react';
-import Image from 'next/image';
+"use client";
+import { Card, CardContent } from "../ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { motion } from "framer-motion";
+import { Linkedin, Mail, Globe } from "lucide-react";
 
-type TeamMember = {
-  name: string;
-  role: string;
-  bio: string;
-  imageSrc: string;
-};
-
-const teamMembers: TeamMember[] = [
+const team = [
   {
-    name: "Ana Silva",
-    role: "CEO & Fundadora",
-    bio: "Especialista em investimentos com mais de 10 anos de experiência em mercados financeiros e criptomoedas.",
-    imageSrc: "/placeholder-team-1.jpg"
+    name: "João Gomes",
+    role: "Founder & CEO",
+    description: "Visionário surdo em blockchain e Acessibilidade/Inclusão.",
+    image: "/team/joao-gomes.jpg",
+    education: undefined,
+    longDescription: `Com mais de 20 anos de experiência em Proteção Civil e Community Building, João é um pioneiro no desenvolvimento de soluções inclusivas para a comunidade surda.`,
+    expertise: ["Soluções Acessiveis", "Inclusão Politica", "Gestão de Investimentos", "Inclusão Financeira"],
+    languages: ["Língua Gestual Portuguesa", "Gesto Internacional"],
+    social: { linkedin: "https://linkedin.com/in/joao-gomes", email: "joao@bitcoinwfsl.com", website: "https://joaogomes.com" },
   },
   {
-    name: "Carlos Mendes",
-    role: "CTO",
-    bio: "Engenheiro de software com vasta experiência em blockchain e sistemas financeiros descentralizados.",
-    imageSrc: "/placeholder-team-2.jpg"
+    name: "D4rk0s",
+    role: "CTO & Co-Founder",
+    description: "Especialista em segurança blockchain e sistemas distribuídos.",
+    image: "/team/d4rk0s.jpg",
+    longDescription: `Líder técnico com vasta experiência em segurança blockchain e sistemas distribuídos. D4rk0s tem sido fundamental no desenvolvimento da infraestrutura técnica segura e escalável da plataforma.\n\nA sua experiência abrange desde a implementação de contratos inteligentes até o desenvolvimento de sistemas de trading automatizados.`,
+    expertise: ["Segurança Blockchain", "Smart Contracts", "Sistemas Distribuídos", "Linux"],
+    languages: ["Português", "Inglês", "Python", "Solidity"],
+    education: "PhD em Ciência da Computação $HOME",
+    social: { linkedin: "https://linkedin.com/in/d4rk0s", email: "d4rk0s@bitcoinwfsl.com", website: "https://d4rk0s.dev" },
   },
-  {
-    name: "Fernanda Costa",
-    role: "Analista de Investimentos",
-    bio: "Analista financeira com especialização em ativos digitais e estratégias de longo prazo.",
-    imageSrc: "/placeholder-team-3.jpg"
-  },
-  {
-    name: "Ricardo Oliveira",
-    role: "Atendimento ao Cliente",
-    bio: "Especialista em relações com o cliente, dedicado a fornecer suporte excepcional a todos os investidores.",
-    imageSrc: "/placeholder-team-4.jpg"
-  }
 ];
 
 export default function Team() {
   return (
-    <section id="equipa" className="py-20">
+    <section id="equipa" className="py-24 gradient-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFD700]">Nossa Equipe</h2>
-          <p className="text-white/70 max-w-2xl mx-auto">
-            Conheça nossos especialistas dedicados a maximizar seus investimentos em bitcoin
-            e garantir o melhor atendimento possível.
-          </p>
+          <h2 className="text-4xl font-bold mb-4 text-[#FFD700]">A Nossa Equipa</h2>
         </div>
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {team.map((member, index) => (
+            <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.2 }} viewport={{ once: true }}>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Card className="bg-black/20 border-white/10 cursor-pointer hover:bg-black/30 transition-colors">
+                    <CardContent className="pt-6">
+                      <img src={member.image} alt={member.name} className="w-32 h-32 rounded-full mx-auto mb-4 object-cover" />
+                      <h3 className="text-xl font-semibold text-center mb-2 text-white">{member.name}</h3>
+                      <p className="text-primary text-center mb-4">{member.role}</p>
+                      <p className="text-white/80 text-center line-clamp-3">{member.description}</p>
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px] bg-black/90 border-white/10">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-[#FFD700]">{member.name}</DialogTitle>
+                    <DialogDescription className="text-white/80">{member.role}</DialogDescription>
+                  </DialogHeader>
+                  <div className="mt-4">
+                    <img src={member.image} alt={member.name} className="w-40 h-40 rounded-full mx-auto mb-6 object-cover" />
+                    <div className="space-y-4">
+                      <div className="text-white/90 whitespace-pre-line">{member.longDescription}</div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {teamMembers.map((member, index) => (
-            <div 
-              key={index} 
-              className="bg-black/30 backdrop-blur-sm rounded-lg overflow-hidden border border-white/10 transition-transform hover:transform hover:scale-105"
-            >
-              <div className="relative h-64 w-full bg-gray-800">
-                {/* We'll use a placeholder for now */}
-                <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-500">
-                  <span>Foto do Membro</span>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-[#FFD700] mb-1">{member.name}</h3>
-                <p className="text-white/70 mb-3">{member.role}</p>
-                <p className="text-white/60">{member.bio}</p>
-                <div className="flex mt-4 space-x-3">
-                  <a href="#" className="text-white/70 hover:text-[#FFD700]">
-                    <span className="sr-only">Twitter</span>
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                    </svg>
-                  </a>
-                  <a href="#" className="text-white/70 hover:text-[#FFD700]">
-                    <span className="sr-only">LinkedIn</span>
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
+                      <div>
+                        <h4 className="text-[#FFD700] font-semibold mb-2">Áreas de Expertise</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {member.expertise.map((skill, i) => (
+                            <span key={i} className="px-3 py-1 rounded-full bg:white/10 text-white/90 text-sm">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="text-[#FFD700] font-semibold mb-2">Idiomas & Tecnologias</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {member.languages.map((lang, i) => (
+                            <span key={i} className="px-3 py-1 rounded-full bg-white/10 text-white/90 text-sm">
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {member.education && (
+                        <div>
+                          <h4 className="text-[#FFD700] font-semibold mb-2">Formação</h4>
+                          <p className="text-white/90">{member.education}</p>
+                        </div>
+                      )}
+
+                      <div className="flex justify-center gap-4 pt-4 border-t border-white/10">
+                        <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-[#FFD700] transition-colors">
+                          <Linkedin className="h-6 w-6" />
+                        </a>
+                        <a href={`mailto:${member.social.email}`} className="text-white/80 hover:text-[#FFD700] transition-colors">
+                          <Mail className="h-6 w-6" />
+                        </a>
+                        <a href={member.social.website} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-[#FFD700] transition-colors">
+                          <Globe className="h-6 w-6" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </motion.div>
           ))}
         </div>
       </div>

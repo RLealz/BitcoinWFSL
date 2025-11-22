@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from './components/theme-provider';
+import QueryProvider from './components/query-provider';
 
 export const metadata: Metadata = {
   title: 'Bitcoin WFSL - Investimentos em Bitcoin',
@@ -14,9 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+      <body className="min-h-screen text-white">
         <ThemeProvider>
-          {children}
+          <QueryProvider>
+            {children}
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
