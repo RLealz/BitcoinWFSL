@@ -1,0 +1,12 @@
+{
+  "/api/investment-plans/route": "/api/investment-plans",
+  "/_not-found/page": "/_not-found",
+  "/api/user/route": "/api/user",
+  "/api/logout/route": "/api/logout",
+  "/api/login/route": "/api/login",
+  "/api/leads/route": "/api/leads",
+  "/api/register/route": "/api/register",
+  "/admin/page": "/admin",
+  "/auth/page": "/auth",
+  "/page": "/"
+}

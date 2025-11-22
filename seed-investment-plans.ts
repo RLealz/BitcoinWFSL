@@ -1,4 +1,5 @@
-import { storage } from './server/storage';
+import { db } from './server/db';
+import { investmentPlans } from './shared/schema';
 
 const samplePlans = [
   // Real Estate Plans
@@ -72,7 +73,8 @@ async function seedInvestmentPlans() {
     
     for (const plan of samplePlans) {
       try {
-        const created = await storage.createInvestmentPlan(plan as any);
+        // @ts-ignore - ignoring type mismatch for simplicity in seed script
+        const [created] = await db.insert(investmentPlans).values(plan).returning();
         console.log(`✓ Added: ${created.name} (${plan.fundType})`);
       } catch (error) {
         console.log(`✗ Failed to add: ${plan.name} - ${error}`);
@@ -80,10 +82,12 @@ async function seedInvestmentPlans() {
     }
     
     console.log('✅ Sample investment plans seeding completed!');
+    process.exit(0);
     
   } catch (error) {
     console.error('❌ Error seeding investment plans:', error);
+    process.exit(1);
   }
 }
 
-seedInvestmentPlans().catch(console.error);
+seedInvestmentPlans();
