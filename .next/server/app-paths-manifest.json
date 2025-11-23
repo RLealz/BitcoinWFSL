@@ -1,3 +1,4 @@
 {
+  "/api/btc-price/route": "app/api/btc-price/route.js",
   "/page": "app/page.js"
 }

@@ -65,6 +65,12 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   handler satisfies AppPageConfig<"/">
 }
 
+// Validate ../../app/api/btc-price/route.ts
+{
+  const handler = {} as typeof import("../../app/api/btc-price/route.js")
+  handler satisfies RouteHandlerConfig<"/api/btc-price">
+}
+
 // Validate ../../app/api/investment-plans/route.ts
 {
   const handler = {} as typeof import("../../app/api/investment-plans/route.js")

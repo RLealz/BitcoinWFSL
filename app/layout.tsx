@@ -6,6 +6,11 @@ import QueryProvider from './components/query-provider';
 export const metadata: Metadata = {
   title: 'Bitcoin WFSL - Investimentos em Bitcoin',
   description: 'Investimentos em bitcoin com segurança, transparência e resultados comprovados.',
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({
