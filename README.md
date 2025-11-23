@@ -1,4 +1,4 @@
-Bitcoin WFSL – Next.js Investment Platform
+## Bitcoin WFSL – Next.js Investment Platform
 
     
 A modern, accessible investment website built with Next.js App Router, Tailwind CSS, shadcn/ui, and Drizzle ORM (Neon Postgres). It delivers a sleek, terminal-inspired aesthetic with strong security practices and a clean UX.
