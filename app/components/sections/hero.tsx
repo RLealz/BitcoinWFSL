@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { Bitcoin } from "lucide-react";
+import Image from 'next/image';
 
 export default function Hero() {
   const handleScroll = (id: string) => {
@@ -18,7 +18,7 @@ export default function Hero() {
             transition={{ duration: 1 }}
             className="mb-6"
           >
-            <Bitcoin className="w-32 h-32 sm:w-40 sm:h-40 text-[#FFD700] animate-pulse" />
+            <Image src="/logo.png" alt="Bitcoin WFSL" width={160} height={160} priority />
           </motion.div>
 
           <motion.div
