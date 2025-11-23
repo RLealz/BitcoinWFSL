@@ -1699,11 +1699,6 @@ section {
   background-color: rgb(230 194 0 / var(--tw-bg-opacity));
 }
 
-.hover\:bg-\[\#FFD700\]:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 215 0 / var(--tw-bg-opacity));
-}
-
 .hover\:bg-\[\#FFD700\]\/10:hover {
   background-color: rgb(255 215 0 / 0.1);
 }
@@ -1752,11 +1747,6 @@ section {
 
 .hover\:text-accent-foreground:hover {
   color: hsl(var(--accent-foreground));
-}
-
-.hover\:text-black:hover {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 .hover\:text-gray-900:hover {
@@ -1994,14 +1984,6 @@ section {
 
 @media (min-width: 640px) {
 
-  .sm\:h-40 {
-    height: 10rem;
-  }
-
-  .sm\:w-40 {
-    width: 10rem;
-  }
-
   .sm\:max-w-\[600px\] {
     max-width: 600px;
   }
@@ -2059,10 +2041,6 @@ section {
 
   .md\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .md\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .md\:text-2xl {

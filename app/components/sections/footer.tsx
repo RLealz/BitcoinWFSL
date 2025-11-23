@@ -46,7 +46,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <span className="text-[#FFD700] mr-2">Email:</span>
-                <a href="mailto:info@bitcoinwfsl.com" className="text-white/70 hover:text-white">
+                <a href="mailto:geralwfsl@gmail.com" className="text-white/70 hover:text-white">
                   info@bitcoinwfsl.com
                 </a>
               </li>

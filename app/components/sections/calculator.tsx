@@ -108,7 +108,7 @@ export default function Calculator() {
                       <SelectValue placeholder="Selecione o período" />
                     </SelectTrigger>
                     <SelectContent>
-                      {[12, 18, 24].map((month) => (
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                         <SelectItem key={month} value={month.toString()}>
                           {month} Meses
                         </SelectItem>

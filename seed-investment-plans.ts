@@ -8,7 +8,7 @@ const samplePlans = [
     description: 'Investimento em propriedades residenciais com retorno estável através de aluguel e valorização.',
     minimumInvestment: 25000,
     monthlyReturnRate: 0.80,
-    durationMonths: 24,
+    durationMonths: 6,
     riskLevel: 'low',
     fundType: 'real-estate',
     isActive: true
@@ -18,7 +18,7 @@ const samplePlans = [
     description: 'Portfolio diversificado de propriedades comerciais em localizações premium.',
     minimumInvestment: 50000,
     monthlyReturnRate: 1.10,
-    durationMonths: 36,
+    durationMonths: 9,
     riskLevel: 'medium',
     fundType: 'real-estate',
     isActive: true
@@ -28,19 +28,19 @@ const samplePlans = [
     description: 'Investimento em projetos de desenvolvimento imobiliário com alto potencial de retorno.',
     minimumInvestment: 100000,
     monthlyReturnRate: 1.50,
-    durationMonths: 48,
+    durationMonths: 12,
     riskLevel: 'high',
     fundType: 'real-estate',
     isActive: true
   },
-  
+
   // Emerging Tech Plans
   {
     name: 'Inteligência Artificial',
     description: 'Investimento em empresas de IA e machine learning com potencial disruptivo.',
     minimumInvestment: 15000,
     monthlyReturnRate: 2.20,
-    durationMonths: 18,
+    durationMonths: 3,
     riskLevel: 'high',
     fundType: 'emerging-tech',
     isActive: true
@@ -50,7 +50,7 @@ const samplePlans = [
     description: 'Portfolio diversificado em tecnologias blockchain e aplicações descentralizadas.',
     minimumInvestment: 20000,
     monthlyReturnRate: 2.80,
-    durationMonths: 24,
+    durationMonths: 6,
     riskLevel: 'high',
     fundType: 'emerging-tech',
     isActive: true
@@ -60,7 +60,7 @@ const samplePlans = [
     description: 'Investimento em tecnologias de Internet das Coisas e cidades inteligentes.',
     minimumInvestment: 30000,
     monthlyReturnRate: 1.90,
-    durationMonths: 30,
+    durationMonths: 9,
     riskLevel: 'medium',
     fundType: 'emerging-tech',
     isActive: true
@@ -70,7 +70,7 @@ const samplePlans = [
 async function seedInvestmentPlans() {
   try {
     console.log('Adding sample investment plans...');
-    
+
     for (const plan of samplePlans) {
       try {
         // @ts-ignore - ignoring type mismatch for simplicity in seed script
@@ -80,10 +80,10 @@ async function seedInvestmentPlans() {
         console.log(`✗ Failed to add: ${plan.name} - ${error}`);
       }
     }
-    
+
     console.log('✅ Sample investment plans seeding completed!');
     process.exit(0);
-    
+
   } catch (error) {
     console.error('❌ Error seeding investment plans:', error);
     process.exit(1);
