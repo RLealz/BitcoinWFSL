@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/../../server/db';
-import { investmentPlans } from '@/../../shared/schema';
-import { eq } from 'drizzle-orm';
+import { sampleInvestmentPlans } from '../../data/sample-investment-plans';
 
 export async function GET() {
   try {
-    const plans = await db.select().from(investmentPlans).where(eq(investmentPlans.isActive, true));
-    return NextResponse.json(plans);
+    // Return sample investment plans (filter only active ones)
+    const activePlans = sampleInvestmentPlans.filter((plan: any) => plan.isActive);
+    return NextResponse.json(activePlans);
   } catch (err) {
     return NextResponse.json({ message: 'Failed to fetch investment plans' }, { status: 500 });
   }
