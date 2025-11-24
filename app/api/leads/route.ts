@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/../../server/db';
-import { leads } from '@shared/schema';
 import { z } from 'zod';
 import { verifyRecaptchaToken } from '@/lib/recaptcha';
 import { RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS } from '@/lib/constants';
@@ -33,11 +31,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'reCAPTCHA verification failed' }, { status: 400 });
     }
 
-    await db.insert(leads).values({
+    // Log lead data to console (no database)
+    console.log('New lead submission:', {
       name: parsed.data.name,
       email: parsed.data.email,
       phone: parsed.data.phone ?? null,
       message: parsed.data.message ?? null,
+      timestamp: new Date().toISOString(),
     });
 
     return NextResponse.json({ message: 'Lead created' }, { status: 201 });

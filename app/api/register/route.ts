@@ -1,14 +1,19 @@
+```typescript
 import { NextRequest, NextResponse } from 'next/server';
-import { insertUserSchema, users } from '@shared/schema';
-import { db } from '@/../../server/db';
-import { eq } from 'drizzle-orm';
-import { hashPassword, signJwt } from '@/lib/auth';
+import { z } from 'zod';
+import { signJwt } from '@/lib/auth';
 import { COOKIE_NAME, JWT_EXPIRES_IN_SECONDS } from '@/lib/constants';
+
+const RegisterSchema = z.object({
+  username: z.string().min(1),
+  password: z.string().min(6),
+  email: z.string().email(),
+});
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const parsed = insertUserSchema.safeParse(body);
+    const parsed = RegisterSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -17,52 +22,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { username, password, email } = parsed.data;
+    const { username, email } = parsed.data;
 
-    const existingUser = await db.query.users.findFirst({
-      where: eq(users.username, username),
+    // Mock registration - just log and return success
+    console.log('New user registration (mock):', {
+      username,
+      email,
+      timestamp: new Date().toISOString(),
     });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { message: 'Username already exists' },
-        { status: 409 }
-      );
-    }
-    
-    const existingEmail = await db.query.users.findFirst({
-      where: eq(users.email, email),
-    });
-
-    if (existingEmail) {
-      return NextResponse.json(
-        { message: 'Email already exists' },
-        { status: 409 }
-      );
-    }
-
-    const hashedPassword = hashPassword(password);
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        ...parsed.data,
-        password: hashedPassword,
-      })
-      .returning();
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
       return NextResponse.json({ message: 'Missing JWT secret' }, { status: 500 });
     }
 
+    // Create mock user
+    const mockUser = {
+      id: Math.floor(Math.random() * 10000),
+      username,
+      email,
+    };
+
     const token = signJwt(
-      { sub: newUser.id, username: newUser.username },
+      { sub: mockUser.id, username: mockUser.username },
       secret,
       JWT_EXPIRES_IN_SECONDS
     );
 
     const res = NextResponse.json({
-      user: { id: newUser.id, username: newUser.username, email: newUser.email },
+      user: mockUser,
     });
 
     res.cookies.set(COOKIE_NAME, token, {
@@ -79,3 +67,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }
+```
