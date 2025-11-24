@@ -12,7 +12,9 @@ export const sampleInvestmentPlans = [
     durationMonths: 12,
     riskLevel: 'low',
     fundType: 'crypto',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: 2,
@@ -23,7 +25,9 @@ export const sampleInvestmentPlans = [
     durationMonths: 12,
     riskLevel: 'medium',
     fundType: 'crypto',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: 3,
@@ -34,7 +38,9 @@ export const sampleInvestmentPlans = [
     durationMonths: 12,
     riskLevel: 'high',
     fundType: 'crypto',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
 
   // Real Estate Plans
@@ -47,7 +53,9 @@ export const sampleInvestmentPlans = [
     durationMonths: 6,
     riskLevel: 'low',
     fundType: 'real-estate',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: 5,
@@ -58,7 +66,9 @@ export const sampleInvestmentPlans = [
     durationMonths: 9,
     riskLevel: 'medium',
     fundType: 'real-estate',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: 6,
@@ -69,7 +79,9 @@ export const sampleInvestmentPlans = [
     durationMonths: 12,
     riskLevel: 'high',
     fundType: 'real-estate',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
 
   // Emerging Tech Plans
@@ -82,7 +94,9 @@ export const sampleInvestmentPlans = [
     durationMonths: 3,
     riskLevel: 'high',
     fundType: 'emerging-tech',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: 8,
@@ -93,7 +107,9 @@ export const sampleInvestmentPlans = [
     durationMonths: 6,
     riskLevel: 'high',
     fundType: 'emerging-tech',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     id: 9,
@@ -104,6 +120,8 @@ export const sampleInvestmentPlans = [
     durationMonths: 9,
     riskLevel: 'medium',
     fundType: 'emerging-tech',
-    isActive: true
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 ];
