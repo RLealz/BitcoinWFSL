@@ -46,13 +46,13 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <span className="text-[#FFD700] mr-2">Email:</span>
-                <a href="mailto:info@bitcoinwfsl.com" className="text-white/70 hover:text-white">
+                <a href="mailto:geralwfsl@gmail.com" className="text-white/70 hover:text-white">
                   info@bitcoinwfsl.com
                 </a>
               </li>
               <li className="flex items-start">
                 <span className="text-[#FFD700] mr-2">Telefone:</span>
-                <a href="tel:+351913207651" className="text-white/70 hover:text-white">
+                <a href="https://t.me/+351913207651" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">
                   +351 913 207 651
                 </a>
               </li>

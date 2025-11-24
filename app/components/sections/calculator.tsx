@@ -13,9 +13,9 @@ import {
 } from "../ui/select";
 
 const INVESTMENT_TIERS = {
-  BRONZE: { min: 1000, max: 2499, monthlyReturn: 0.0417, name: "Bronze" },
-  SILVER: { min: 2500, max: 4999, monthlyReturn: 0.0625, name: "Prata" },
-  GOLD: { min: 5000, max: 10000, monthlyReturn: 0.0833, name: "Ouro" },
+  BRONZE: { min: 1000, max: 2499, monthlyReturn: 0.0417, name: "Bitcoin Starter" },
+  SILVER: { min: 2500, max: 4999, monthlyReturn: 0.0625, name: "Crypto Growth" },
+  GOLD: { min: 5000, max: 10000, monthlyReturn: 0.0833, name: "DeFi High Yield" },
 };
 
 export default function Calculator() {
@@ -31,16 +31,16 @@ export default function Calculator() {
 
     if (investment >= INVESTMENT_TIERS.GOLD.min && investment <= INVESTMENT_TIERS.GOLD.max) {
       tier = INVESTMENT_TIERS.GOLD;
-      tierName = "Ouro";
+      tierName = "DeFi High Yield";
     } else if (investment >= INVESTMENT_TIERS.SILVER.min && investment <= INVESTMENT_TIERS.SILVER.max) {
       tier = INVESTMENT_TIERS.SILVER;
-      tierName = "Prata";
+      tierName = "Crypto Growth";
     } else if (investment >= INVESTMENT_TIERS.BRONZE.min && investment <= INVESTMENT_TIERS.BRONZE.max) {
       tier = INVESTMENT_TIERS.BRONZE;
-      tierName = "Bronze";
+      tierName = "Bitcoin Starter";
     } else if (investment > INVESTMENT_TIERS.GOLD.max) {
       tier = INVESTMENT_TIERS.GOLD;
-      tierName = "Ouro (Premium)";
+      tierName = "DeFi High Yield (Premium)";
     } else {
       return {
         totalReturn: investment,
@@ -108,7 +108,7 @@ export default function Calculator() {
                       <SelectValue placeholder="Selecione o período" />
                     </SelectTrigger>
                     <SelectContent>
-                      {[12, 18, 24].map((month) => (
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                         <SelectItem key={month} value={month.toString()}>
                           {month} Meses
                         </SelectItem>
@@ -150,8 +150,8 @@ export default function Calculator() {
                 </div>
               ) : (
                 <div className="mt-8 p-4 rounded-lg bg-red-900/20 border border-red-500/20">
-                  <p className="text-red-400 text-center">Investimento mínimo: €1.000 (Plano Bronze)</p>
-                  <div className="mt-3 text-sm text-white/60 text-center">Bronze: €1.000 - €2.499 | Prata: €2.500 - €4.999 | Ouro: €5.000 - €10.000</div>
+                  <p className="text-red-400 text-center">Investimento mínimo: €1.000 (Bitcoin Starter)</p>
+                  <div className="mt-3 text-sm text-white/60 text-center">Bitcoin Starter: €1.000 - €2.499 | Crypto Growth: €2.500 - €4.999 | DeFi High Yield: €5.000 - €10.000</div>
                 </div>
               )}
 

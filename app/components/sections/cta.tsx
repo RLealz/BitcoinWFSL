@@ -2,6 +2,8 @@
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export default function CTA() {
   const handleScroll = (id: string) => {
@@ -25,13 +27,12 @@ export default function CTA() {
               <p className="text-lg mb-8 text-white/80">
                 Junte-se à nossa plataforma hoje e assuma o controle do seu futuro financeiro
               </p>
-              <Button
-                size="lg"
-                onClick={() => handleScroll("contact")}
-                className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-semibold"
-              >
-                Comece Agora
-              </Button>
+              <Link href="https://t.me/+351913207651" target="_blank" rel="noopener noreferrer">
+                <Button size="lg" className="bg-[#FFD700] text-black hover:bg-[#F7931A] text-lg px-8 py-6 rounded-full font-bold transition-all transform hover:scale-105">
+                  Comece Agora
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </motion.div>

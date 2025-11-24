@@ -546,6 +546,9 @@ video {
   white-space: nowrap;
   border-width: 0;
 }
+.static {
+  position: static;
+}
 .fixed {
   position: fixed;
 }
@@ -829,6 +832,9 @@ video {
   --tw-translate-y: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
+.transform {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
 @keyframes pulse {
 
   50% {
@@ -1014,6 +1020,9 @@ video {
 .border-white\/5 {
   border-color: rgb(255 255 255 / 0.05);
 }
+.border-\[\#FFD700\]\/20 {
+  border-color: rgb(255 215 0 / 0.2);
+}
 .border-t-transparent {
   border-top-color: transparent;
 }
@@ -1108,6 +1117,9 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
 }
+.bg-\[\#FFD700\]\/10 {
+  background-color: rgb(255 215 0 / 0.1);
+}
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
@@ -1191,6 +1203,10 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 .pb-12 {
   padding-bottom: 3rem;
@@ -1689,6 +1705,12 @@ section {
   color: rgb(255 255 255 / 0.5);
 }
 
+.hover\:scale-105:hover {
+  --tw-scale-x: 1.05;
+  --tw-scale-y: 1.05;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
 .hover\:bg-\[\#E5C100\]:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(229 193 0 / var(--tw-bg-opacity));
@@ -1697,11 +1719,6 @@ section {
 .hover\:bg-\[\#E6C200\]:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(230 194 0 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-\[\#FFD700\]:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 215 0 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-\[\#FFD700\]\/10:hover {
@@ -1745,6 +1762,11 @@ section {
   background-color: rgb(255 255 255 / 0.05);
 }
 
+.hover\:bg-\[\#F7931A\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(247 147 26 / var(--tw-bg-opacity));
+}
+
 .hover\:text-\[\#FFD700\]:hover {
   --tw-text-opacity: 1;
   color: rgb(255 215 0 / var(--tw-text-opacity));
@@ -1752,11 +1774,6 @@ section {
 
 .hover\:text-accent-foreground:hover {
   color: hsl(var(--accent-foreground));
-}
-
-.hover\:text-black:hover {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 .hover\:text-gray-900:hover {
@@ -1994,14 +2011,6 @@ section {
 
 @media (min-width: 640px) {
 
-  .sm\:h-40 {
-    height: 10rem;
-  }
-
-  .sm\:w-40 {
-    width: 10rem;
-  }
-
   .sm\:max-w-\[600px\] {
     max-width: 600px;
   }
@@ -2059,10 +2068,6 @@ section {
 
   .md\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .md\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .md\:text-2xl {

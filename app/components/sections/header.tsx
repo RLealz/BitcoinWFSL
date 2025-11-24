@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { Button } from "../ui/button";
 import { AccessibilityControls } from "../ui/accessibility-controls";
 import { NavigationMenu, NavigationMenuItem } from "../ui/navigation-menu";
+import BtcTicker from "../btc-ticker";
 
 export default function Header() {
   const pathname = usePathname();
@@ -30,45 +31,48 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
             <NavigationMenu>
-              <NavigationMenuItem 
-                href="#servicos" 
+              <NavigationMenuItem
+                href="#servicos"
                 isScrollLink={isHomePage}
                 className="px-4"
               >
                 Serviços
               </NavigationMenuItem>
-              <NavigationMenuItem 
-                href="#planos" 
+              <NavigationMenuItem
+                href="#planos"
                 isScrollLink={isHomePage}
                 className="px-4"
               >
                 Planos
               </NavigationMenuItem>
-              <NavigationMenuItem 
-                href="#equipa" 
+              <NavigationMenuItem
+                href="#equipa"
                 isScrollLink={isHomePage}
                 className="px-4"
               >
                 Equipa
               </NavigationMenuItem>
-              <NavigationMenuItem 
+              {/* <NavigationMenuItem 
                 href="#contact" 
                 isScrollLink={isHomePage}
                 className="px-4"
               >
                 Contato
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
             </NavigationMenu>
           </div>
 
           {/* Accessibility Controls and Auth Button */}
           <div className="flex items-center space-x-4">
+            <div className="hidden md:block">
+              <BtcTicker />
+            </div>
             <AccessibilityControls />
 
-          {/* Mobile Menu Toggle */}
-            <button 
+            {/* Mobile Menu Toggle */}
+            <button
               className="inline-flex md:hidden items-center justify-center p-2 rounded-md text-white hover:text-[#FFD700] focus:outline-none"
               onClick={toggleMobileMenu}
               aria-expanded={mobileMenuOpen}
@@ -86,38 +90,38 @@ export default function Header() {
         {/* Mobile Navigation Menu */}
         <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'} py-4`}>
           <div className="flex flex-col space-y-4 px-2">
-            <NavigationMenuItem 
-              href="#servicos" 
+            <NavigationMenuItem
+              href="#servicos"
               isScrollLink={isHomePage}
               className="block py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               Serviços
             </NavigationMenuItem>
-            <NavigationMenuItem 
-              href="#planos" 
+            <NavigationMenuItem
+              href="#planos"
               isScrollLink={isHomePage}
               className="block py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               Planos
             </NavigationMenuItem>
-            <NavigationMenuItem 
-              href="#equipa" 
+            <NavigationMenuItem
+              href="#equipa"
               isScrollLink={isHomePage}
               className="block py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               Equipa
             </NavigationMenuItem>
-            <NavigationMenuItem 
+            {/* <NavigationMenuItem 
               href="#contact" 
               isScrollLink={isHomePage}
               className="block py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               Contato
-            </NavigationMenuItem>
+            </NavigationMenuItem> */}
           </div>
         </div>
       </nav>
