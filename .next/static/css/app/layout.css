@@ -992,6 +992,9 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(255 215 0 / var(--tw-border-opacity));
 }
+.border-\[\#FFD700\]\/20 {
+  border-color: rgb(255 215 0 / 0.2);
+}
 .border-amber-200 {
   --tw-border-opacity: 1;
   border-color: rgb(253 230 138 / var(--tw-border-opacity));
@@ -1020,15 +1023,15 @@ video {
 .border-white\/5 {
   border-color: rgb(255 255 255 / 0.05);
 }
-.border-\[\#FFD700\]\/20 {
-  border-color: rgb(255 215 0 / 0.2);
-}
 .border-t-transparent {
   border-top-color: transparent;
 }
 .bg-\[\#FFD700\] {
   --tw-bg-opacity: 1;
   background-color: rgb(255 215 0 / var(--tw-bg-opacity));
+}
+.bg-\[\#FFD700\]\/10 {
+  background-color: rgb(255 215 0 / 0.1);
 }
 .bg-\[\#FFD700\]\/20 {
   background-color: rgb(255 215 0 / 0.2);
@@ -1116,9 +1119,6 @@ video {
 .bg-yellow-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
-}
-.bg-\[\#FFD700\]\/10 {
-  background-color: rgb(255 215 0 / 0.1);
 }
 .object-cover {
   -o-object-fit: cover;
@@ -1721,6 +1721,11 @@ section {
   background-color: rgb(230 194 0 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-\[\#F7931A\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(247 147 26 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-\[\#FFD700\]\/10:hover {
   background-color: rgb(255 215 0 / 0.1);
 }
@@ -1760,11 +1765,6 @@ section {
 
 .hover\:bg-white\/5:hover {
   background-color: rgb(255 255 255 / 0.05);
-}
-
-.hover\:bg-\[\#F7931A\]:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(247 147 26 / var(--tw-bg-opacity));
 }
 
 .hover\:text-\[\#FFD700\]:hover {

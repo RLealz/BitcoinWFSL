@@ -53,7 +53,7 @@ export default function Footer() {
               <li className="flex items-start">
                 <span className="text-[#FFD700] mr-2">Telefone:</span>
                 <a href="https://t.me/+351913207651" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">
-                  +351 913 207 651
+                  +351 933 072 980
                 </a>
               </li>
               <li className="flex items-start">

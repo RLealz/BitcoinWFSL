@@ -13,7 +13,7 @@ import {
 } from "../ui/select";
 
 const INVESTMENT_TIERS = {
-  BRONZE: { min: 1000, max: 2499, monthlyReturn: 0.0417, name: "Bitcoin Starter" },
+  BRONZE: { min: 100, max: 2499, monthlyReturn: 0.0417, name: "Bitcoin Starter" },
   SILVER: { min: 2500, max: 4999, monthlyReturn: 0.0625, name: "Crypto Growth" },
   GOLD: { min: 5000, max: 10000, monthlyReturn: 0.0833, name: "DeFi High Yield" },
 };
@@ -96,7 +96,7 @@ export default function Calculator() {
                     min="0"
                     value={initialInvestment}
                     onChange={(e) => setInitialInvestment(e.target.value)}
-                    placeholder="1000"
+                    placeholder="100"
                     className="bg-black/20 border-white/10 text-white placeholder:text-white/50"
                   />
                 </div>
@@ -150,8 +150,8 @@ export default function Calculator() {
                 </div>
               ) : (
                 <div className="mt-8 p-4 rounded-lg bg-red-900/20 border border-red-500/20">
-                  <p className="text-red-400 text-center">Investimento mínimo: €1.000 (Bitcoin Starter)</p>
-                  <div className="mt-3 text-sm text-white/60 text-center">Bitcoin Starter: €1.000 - €2.499 | Crypto Growth: €2.500 - €4.999 | DeFi High Yield: €5.000 - €10.000</div>
+                  <p className="text-red-400 text-center">Investimento mínimo: €100 (Bitcoin Starter)</p>
+                  <div className="mt-3 text-sm text-white/60 text-center">Bitcoin Starter: €100 - €2.499 | Crypto Growth: €2.500 - €4.999 | DeFi High Yield: €5.000 - €10.000</div>
                 </div>
               )}
 
